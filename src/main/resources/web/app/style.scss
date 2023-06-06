@@ -1,0 +1,51 @@
+.cell, .quark-type {
+  padding: 80px 5px 5px;
+  margin: 5px;
+  height: 100px;
+  cursor: pointer;
+  text-align: center;
+  background-repeat: no-repeat;
+  background-position: center;
+  font-weight: bold;
+
+  &.blasted {
+    cursor: auto;
+    background-image: url("images/blasted.svg");
+  }
+
+  &.up {
+    background-image: url("images/up.svg");
+  }
+  &.down {
+    background-image: url("images/down.svg");
+  }
+
+  &.charm {
+    background-image: url("images/charm.svg");
+  }
+  &.strange {
+    background-image: url("images/strange.svg");
+  }
+  &.top {
+    background-image: url("images/top.svg");
+  }
+  &.bottom {
+    background-image: url("images/bottom.svg");
+  }
+}
+
+.quark-type {
+  padding: 40px 5px 5px;
+  height: 50px;
+}
+
+.score {
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.quark-picker {
+  margin-top: 20px;
+  border-top: 1px solid black;
+  margin-bottom: 20px;
+}
