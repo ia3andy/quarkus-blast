@@ -5,21 +5,18 @@ import java.util.List;
 import java.util.Random;
 
 public class GameGenerator {
-    private final int rows;
-    private final int columns;
-    private final int minCharge;
-    private final int maxCharge;
+
+    public static final int DEFAULT_ROWS = 5;
+    public static final int DEFAULT_COLUMNS = 6;
+    public static final int DEFAULT_MIN_CHARGE = 1;
+    public static final int DEFAULT_MAX_CHARGE = 1000;
     private final Random random;
 
-    public GameGenerator(int rows, int columns, int minCharge, int maxCharge) {
-        this.rows = rows;
-        this.columns = columns;
-        this.minCharge = minCharge;
-        this.maxCharge = maxCharge;
+    public GameGenerator() {
         this.random = new Random();
     }
 
-    public Game generateGrid() {
+    public List<Cell> generateCells(int rows, int columns, int minCharge, int maxCharge) {
         List<Cell> cells = new ArrayList<>(rows * columns);
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
@@ -27,7 +24,7 @@ public class GameGenerator {
                 cells.add(new Cell(row, column, randomQuark, random.nextInt(minCharge, maxCharge)));
             }
         }
-        return new Game(cells, rows, columns, 0);
+        return cells;
     }
 
     private QuarkType getRandomQuarkType() {

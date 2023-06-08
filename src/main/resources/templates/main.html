@@ -1,15 +1,28 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Quarkus Blast</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     {#bundleStyle /}
     {#bundleScript /}
-    <script src="https://unpkg.com/hyperscript.org@0.9.8"></script>
-  </head>
-  <body>
-
-    <!-- This inserts the body of your templates -->
-    {#insert /}
-
-  </body>
+</head>
+<body>
+    <main hx-ext="morph">
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
+            <h3>Boards</h3>
+            {#include QuarkusBlast/boardsNav.html}{/include}
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item" hx-push-url="true" hx-get="{uri:QuarkusBlast.createNewBoard}" hx-target="#content">
+                    <button class="nav-link">
+                        <i class="bi bi-plus-square-dotted"></i>
+                        Create new board
+                    </button>
+                </li>
+            </ul>
+        </div>
+        <div id="content" class="d-flex flex-column flex-grow-1 p-3 bg-light">
+        {#insert /}
+        </div>
+    </main>
+</body>
 </html>

@@ -1,0 +1,31 @@
+{#include main.html}
+{#fragment id=content}
+<form hx-post="{uri:QuarkusBlast.newBoard}">
+    <h1>New Game Board</h1>
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="name" class="form-control" name="name" id="name" value="{board.generatedName}">
+    </div>
+    <div class="mb-3 row">
+        <div class="col">
+            <label for="rows" class="form-label">Rows</label>
+            <input type="number" class="form-control" name="rows" id="rows" value="{board.defaultRows}" min="1">
+        </div>
+        <div class="col">
+            <label for="columns" class="form-label">Columns</label>
+            <input type="number" class="form-control"  name="columns" id="columns" value="{board.defaultColumns}" min="1" max="10">
+        </div>
+    </div>
+    <div class="mb-3 row">
+        <div class="col">
+            <label for="minCharge" class="form-label">Min Charge</label>
+            <input type="number" class="form-control" name="minCharge"  id="minCharge" value="{board.defaultMinCharge}" min="1">
+        </div>
+        <div class="col">
+            <label for="maxCharge" class="form-label">Max Charge</label>
+            <input type="number" class="form-control" name="maxCharge"  id="maxCharge" value="{board.defaultMaxCharge}" min="1">
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{/fragment}

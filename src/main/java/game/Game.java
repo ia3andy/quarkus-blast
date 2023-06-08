@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public record Game(List<Cell> cells, int rows, int columns, int score) {
 
@@ -46,9 +47,9 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
     }
     public Game blast(Set<Cell> blast) {
         List<Cell> newCells = cells.stream()
-                .map(c -> blast.contains(c) ? new Cell(c.row(), c.column(), null, 0) : c)
+                .map(c -> blast.contains(c) ? new Cell(c.row(), c.column(), null, c.charge()) : c)
                 .collect(Collectors.toList());
-        return new Game(newCells, columns(), rows(), score() + computePoints(blast));
+        return new Game(newCells, rows(), columns(), score() + computePoints(blast));
     }
 
     public boolean isAlone(Cell targetCell) {
@@ -97,9 +98,13 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
     }
 
     public Game changeCellType(Cell selectedCell, QuarkType newType) {
-        final int index = cells().indexOf(selectedCell);
-        final ArrayList<Cell> newCells = new ArrayList<>(cells());
-        newCells.set(index, new Cell(selectedCell.row(), selectedCell.column(), newType, selectedCell.charge()));
+        final List<Cell> newCells = cells.stream().map(c -> {
+            if (selectedCell.equals(c))
+                return new Cell(c.row(), c.column(), newType, c.charge());
+            else if (c.type() == null)
+                return new Cell(selectedCell.row(), selectedCell.column(), c.type(), 0);
+            return c;
+        }).collect(Collectors.toList());
         return new Game(newCells, rows(), columns(), score());
     }
 

@@ -39,6 +39,11 @@
       <version>0.0.1-alpha4</version>
     </dependency>
     <dependency>
+      <groupId>me.atrox.haikunator</groupId>
+      <artifactId>Haikunator</artifactId>
+      <version>2.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive</artifactId>
     </dependency>
@@ -70,6 +75,11 @@
       <groupId>org.mvnpm</groupId>
       <artifactId>htmx.org</artifactId>
       <version>1.9.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mvnpm</groupId>
+      <artifactId>idiomorph</artifactId>
+      <version>0.0.8</version>
     </dependency>
     <dependency>
       <groupId>org.mvnpm</groupId>

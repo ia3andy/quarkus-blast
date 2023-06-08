@@ -9,6 +9,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,20 +22,14 @@ public class GameEntity extends PanacheEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     public List<StoredCell> cells;
+    public int score = 0;
 
-    public Integer activeCellIndex;
+    public Date started;
 
-    public int activationCount;
-    public int score;
+    public Date completed;
 
     public Game toGame() {
-        List<Cell> gameCells = new ArrayList<>();
-        for (int i = 0; i < cells.size(); i++) {
-            final int[] coords = Game.coords(i, columns);
-            final StoredCell storedCell = cells.get(i);
-            gameCells.add(new Cell(coords[0], coords[1], storedCell.type, storedCell.charge));
-
-        }
+        final List<Cell> gameCells = BoardEntity.toGameCells(cells, columns);
         return new Game(gameCells, rows, columns, score);
     }
 
@@ -45,9 +40,12 @@ public class GameEntity extends PanacheEntity {
         this.score = game.score();
     }
 
-    public static GameEntity fromGame(Game game) {
+    public static GameEntity fromBoard(BoardEntity board) {
         final GameEntity gameEntity = new GameEntity();
-        gameEntity.setGame(game);
+        gameEntity.rows = board.rows;
+        gameEntity.columns = board.columns;
+        gameEntity.cells = new ArrayList<>(board.cells);
+        gameEntity.started = new Date();
         return gameEntity;
     }
 
