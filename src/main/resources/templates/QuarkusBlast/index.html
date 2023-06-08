@@ -46,7 +46,7 @@
         </div>
         <div class="quark-picker container text-center">
             <div class="row" _="on dragstart call event.dataTransfer.setData('text/plain',target.textContent)">
-                {#for type in global.quarkTypes}
+                {#for type in quarkTypes}
                 <div class="col quark-type {type}" draggable='true'>{type}</div>
                 {/for}
             </div>

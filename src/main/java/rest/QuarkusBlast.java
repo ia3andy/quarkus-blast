@@ -1,63 +1,68 @@
 package rest;
 
-import game.Cell;
-import game.Game;
-import game.GameGenerator;
-import game.QuarkType;
-import io.quarkiverse.renarde.htmx.HxController;
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import io.quarkus.runtime.util.StringUtil;
-import io.smallrye.common.annotation.Blocking;
-import io.vertx.core.json.JsonObject;
-import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-
-import io.quarkus.qute.TemplateInstance;
-import io.quarkus.qute.CheckedTemplate;
-import jakarta.ws.rs.core.MediaType;
-import me.atrox.haikunator.Haikunator;
-import model.BoardEntity;
-import model.GameEntity;
-import org.jboss.resteasy.reactive.RestForm;
-import org.jboss.resteasy.reactive.RestPath;
+import static game.GameGenerator.DEFAULT_COLUMNS;
+import static game.GameGenerator.DEFAULT_MAX_CHARGE;
+import static game.GameGenerator.DEFAULT_MIN_CHARGE;
+import static game.GameGenerator.DEFAULT_ROWS;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static game.GameGenerator.DEFAULT_COLUMNS;
-import static game.GameGenerator.DEFAULT_MAX_CHARGE;
-import static game.GameGenerator.DEFAULT_MIN_CHARGE;
-import static game.GameGenerator.DEFAULT_ROWS;
+import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.RestPath;
+
+import game.Cell;
+import game.Game;
+import game.GameGenerator;
+import game.QuarkType;
+import io.quarkiverse.renarde.htmx.HxController;
+import io.quarkus.qute.CheckedTemplate;
+import io.quarkus.qute.TemplateGlobal;
+import io.quarkus.qute.TemplateInstance;
+import io.quarkus.runtime.util.StringUtil;
+import io.smallrye.common.annotation.Blocking;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.MediaType;
+import me.atrox.haikunator.Haikunator;
+import model.BoardEntity;
+import model.GameEntity;
 
 @Path("/")
 @Blocking
 public class QuarkusBlast extends HxController {
-    public static final List<String> QUARK_TYPES = QuarkType.TYPES.stream().map(Enum::toString).collect(Collectors.toList());
-    private static final GlobalData GLOBAL_DATA = new GlobalData(QUARK_TYPES);
     GameGenerator gameGenerator = new GameGenerator();
 
+    @TemplateGlobal
+    public static class Globals {
+        public static final List<String> QUARK_TYPES = QuarkType.TYPES.stream().map(Enum::toString).collect(Collectors.toList());
+
+        public static List<String> quarkTypes(){
+        	return QUARK_TYPES;
+        }
+    }
+    
     @CheckedTemplate
     public static class Templates {
 
-        public static native TemplateInstance index(GlobalData global, GameData game, List<BoardEntity> boards);
+        public static native TemplateInstance index(GameData game, List<BoardEntity> boards);
 
-        public static native TemplateInstance boardsNav(GlobalData global, List<BoardEntity> boards);
+        public static native TemplateInstance boardsNav(List<BoardEntity> boards);
 
-        public static native TemplateInstance index$game(GlobalData global, GameData game);
+        public static native TemplateInstance index$game(GameData game);
 
-        public static native TemplateInstance gameNotFound(GlobalData global, Long id);
+        public static native TemplateInstance gameNotFound(Long id);
 
-        public static native TemplateInstance createNewBoard(GlobalData global, List<BoardEntity> boards,
+        public static native TemplateInstance createNewBoard(List<BoardEntity> boards,
                 CreateBoardData board);
 
-        public static native TemplateInstance createNewBoard$content(GlobalData global, CreateBoardData board);
+        public static native TemplateInstance createNewBoard$content(CreateBoardData board);
     }
 
     @Path("/")
@@ -65,13 +70,13 @@ public class QuarkusBlast extends HxController {
     public TemplateInstance index() {
         final List<BoardEntity> boards = BoardEntity.listAll();
         final BoardEntity board = BoardEntity.find("").firstResult();
-        return Templates.index(GLOBAL_DATA, new GameData(createBoardGame(board)), boards);
+        return Templates.index(new GameData(createBoardGame(board)), boards);
     }
 
     public TemplateInstance boardsNav() {
         onlyHxRequest();
         final List<BoardEntity> boards = BoardEntity.listAll();
-        return Templates.boardsNav(GLOBAL_DATA, boards);
+        return Templates.boardsNav(boards);
     }
 
     @Transactional
@@ -80,8 +85,8 @@ public class QuarkusBlast extends HxController {
         String generatedName = new Haikunator().haikunate();
         final CreateBoardData board = new CreateBoardData(generatedName, DEFAULT_ROWS,
                 DEFAULT_COLUMNS, DEFAULT_MIN_CHARGE, DEFAULT_MAX_CHARGE);
-        return isHxRequest() ? Templates.createNewBoard$content(GLOBAL_DATA, board) :
-                Templates.createNewBoard(GLOBAL_DATA, boards, board);
+        return isHxRequest() ? Templates.createNewBoard$content(board) :
+                Templates.createNewBoard(boards, board);
     }
 
     @POST
@@ -126,8 +131,8 @@ public class QuarkusBlast extends HxController {
         hx(HxResponseHeader.TRIGGER, "refreshBoards");
         final Optional<GameEntity> game = GameEntity.findByIdOptional(id);
         return game.isPresent() ?
-                Templates.index$game(GLOBAL_DATA, new GameData(game.get())) :
-                Templates.gameNotFound(GLOBAL_DATA, id);
+                Templates.index$game(new GameData(game.get())) :
+                Templates.gameNotFound(id);
     }
 
     @POST
@@ -149,9 +154,6 @@ public class QuarkusBlast extends HxController {
             this(game.id, game.toGame().asGrid(), game.score, game.completed);
         }
 
-    }
-
-    public record GlobalData(List<String> quarkTypes) {
     }
 
     public record CreateBoardData(String generatedName, int defaultRows,
