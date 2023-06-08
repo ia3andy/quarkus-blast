@@ -65,11 +65,11 @@ public class QuarkusBlast extends HxController {
         public static native TemplateInstance createNewBoard$content(CreateBoardData board);
     }
 
-    @Path("/")
     @Transactional
+    @Path("/")
     public TemplateInstance index() {
         final List<BoardEntity> boards = BoardEntity.listAll();
-        final BoardEntity board = BoardEntity.find("").firstResult();
+        final BoardEntity board = BoardEntity.findAll().firstResult();
         return Templates.index(new GameData(createBoardGame(board)), boards);
     }
 
@@ -79,7 +79,6 @@ public class QuarkusBlast extends HxController {
         return Templates.boardsNav(boards);
     }
 
-    @Transactional
     public TemplateInstance createNewBoard() {
         final List<BoardEntity> boards = BoardEntity.listAll();
         String generatedName = new Haikunator().haikunate();
@@ -90,8 +89,6 @@ public class QuarkusBlast extends HxController {
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-    @Transactional
     public void play(@NotNull @RestPath Long id, @NotNull @RestPath int row, @NotNull @RestPath int column,
             @NotNull @RestForm("type")
             QuarkType type) {
@@ -136,7 +133,6 @@ public class QuarkusBlast extends HxController {
     }
 
     @POST
-    @Transactional
     public void newBoard(@RestForm String name, @RestForm @Positive int rows, @RestForm @Positive int columns,
             @RestForm @Positive int minCharge, @RestForm @Positive int maxCharge) {
         onlyHxRequest();
