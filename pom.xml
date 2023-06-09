@@ -36,7 +36,7 @@
     <dependency>
       <groupId>io.quarkiverse.web-bundler</groupId>
       <artifactId>quarkus-web-bundler</artifactId>
-      <version>0.0.1-alpha4</version>
+      <version>1.0.0-RC1</version>
     </dependency>
     <dependency>
       <groupId>me.atrox.haikunator</groupId>

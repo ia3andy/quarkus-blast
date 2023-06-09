@@ -17,7 +17,7 @@ function random(min, max) {
 let playing = false;
 let timeout = null;
 window.playSound = function (name, volume) {
-    const delay = playing ? random(100, 500) : 0;
+    const delay = playing ? random(300, 800) : 0;
     playing = true;
     clearTimeout(timeout);
     timeout = setTimeout(() => {

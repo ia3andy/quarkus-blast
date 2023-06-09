@@ -10,6 +10,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class BoardEntity extends PanacheEntity {
     public int columns;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    public Map<String, String> bestScores;
+    public Map<String, Integer> bestScores = new HashMap<>();
 
     @JdbcTypeCode(SqlTypes.JSON)
     public List<StoredCell> cells;

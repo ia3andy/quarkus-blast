@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @Entity
 public class GameEntity extends PanacheEntity {
 
+    public Long boardId;
+
     public int rows;
     public int columns;
 
@@ -51,6 +53,7 @@ public class GameEntity extends PanacheEntity {
 
     public static GameEntity fromBoard(BoardEntity board) {
         final GameEntity gameEntity = new GameEntity();
+        gameEntity.boardId = board.id;
         gameEntity.rows = board.rows;
         gameEntity.columns = board.columns;
         gameEntity.cells = new ArrayList<>(board.cells);

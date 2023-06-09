@@ -13,6 +13,7 @@
                 Congratulation, you blasted it all, your subatomic score is: <b>{game.score}</b>
             </div>
         </div>
+        {#include QuarkusBlast/saveScore.html}{/include}
         {#else}
         <div class="game-grid container text-center">
             {#for row in game.grid()}

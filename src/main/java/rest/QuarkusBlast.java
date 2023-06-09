@@ -52,6 +52,8 @@ public class QuarkusBlast extends HxController {
 
         public static native TemplateInstance boardsNav(List<BoardEntity> boards);
 
+        public static native TemplateInstance saveScore(GameData game);
+
         public static native TemplateInstance index$game(GameData game);
 
         public static native TemplateInstance gameNotFound(Long id);
@@ -140,6 +142,17 @@ public class QuarkusBlast extends HxController {
         board.persist();
         final GameEntity game = createBoardGame(board);
         game(game.id);
+    }
+
+    @POST
+    public void saveScore(@NotNull @RestPath Long id, @RestForm String nickname) {
+        onlyHxRequest();
+        final GameEntity game = GameEntity.findById(id);
+        notFoundIfNull(game);
+        final BoardEntity board = BoardEntity.findById(game.id);
+        notFoundIfNull(board);
+        board.bestScores.put(nickname, game.score);
+        board.persist();
     }
 
     public record GameData(Long id, List<List<Cell>> grid, int score, Date completed) {
