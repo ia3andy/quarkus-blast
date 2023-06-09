@@ -5,9 +5,6 @@
             <i class="me bi bi-grid"></i>
             {board.name}
         </button>
-        <button class="nav-link" hx-post="{uri:QuarkusBlast.startGame(board.id)}" hx-target="#content" hx-swap="innerHTML">
-                   <i class="me bi bi-list-ol"></i>
-                </button>
     </li>
     {/for}
 </ul>
