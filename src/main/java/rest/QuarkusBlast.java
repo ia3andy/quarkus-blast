@@ -1,18 +1,5 @@
 package rest;
 
-import static game.GameGenerator.DEFAULT_COLUMNS;
-import static game.GameGenerator.DEFAULT_MAX_CHARGE;
-import static game.GameGenerator.DEFAULT_MIN_CHARGE;
-import static game.GameGenerator.DEFAULT_ROWS;
-
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.jboss.resteasy.reactive.RestForm;
-import org.jboss.resteasy.reactive.RestPath;
-
 import game.Cell;
 import game.Game;
 import game.GameGenerator;
@@ -26,13 +13,23 @@ import io.smallrye.common.annotation.Blocking;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.MediaType;
 import me.atrox.haikunator.Haikunator;
 import model.BoardEntity;
 import model.GameEntity;
+import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.RestPath;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static game.GameGenerator.DEFAULT_COLUMNS;
+import static game.GameGenerator.DEFAULT_MAX_CHARGE;
+import static game.GameGenerator.DEFAULT_MIN_CHARGE;
+import static game.GameGenerator.DEFAULT_ROWS;
 
 @Path("/")
 @Blocking

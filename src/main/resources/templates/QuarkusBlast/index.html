@@ -7,7 +7,7 @@
 
     <div class="container">
         {#if game.completed}
-        <div class="alert alert-success d-flex align-items-center mt-2" role="alert">
+        <div class="alert alert-success d-flex align-items-center mt-5" role="alert" _="on load call playSound('blasted', 100)">
             <i class="blast-score bi flex-shrink-0 me-2"></i>
             <div>
                 Congratulation, you blasted it all, your subatomic score is: <b>{game.score}</b>
@@ -18,7 +18,7 @@
             {#for row in game.grid()}
             <div class="row">
                 {#for col in row}
-                {#if col.type}
+                {#if !col.blasted}
                 <div class="col cell {col.type}" hx-trigger="blastQuark"
                      hx-post="{uri:QuarkusBlast.play(game.id, col.row, col.column)}"
                      hx-vals='js:\{type: event.detail.type.toUpperCase()}' hx-target="#content"
@@ -32,7 +32,7 @@
                     {col.charge}
                 </div>
                 {#else if col.charge > 0}
-                <div class="col cell blasted blast-effect"></div>
+                <div class="col cell blasted blast-effect" _="on load call playSound('{col.type}', {col.charge}/1000)"></div>
                 {#else}
                 <div class="col cell blasted"></div>
                 {/if}

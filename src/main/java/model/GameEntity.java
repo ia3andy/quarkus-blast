@@ -22,6 +22,9 @@ public class GameEntity extends PanacheEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     public List<StoredCell> cells;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    public List<Boolean> blasted;
     public int score = 0;
 
     public Date started;
@@ -29,14 +32,20 @@ public class GameEntity extends PanacheEntity {
     public Date completed;
 
     public Game toGame() {
-        final List<Cell> gameCells = BoardEntity.toGameCells(cells, columns);
+        final List<Cell> gameCells = BoardEntity.toGameCells(cells, blasted, columns);
         return new Game(gameCells, rows, columns, score);
     }
 
     public void setGame(Game game) {
         this.rows = game.rows();
         this.columns = game.columns();
-        this.cells = game.cells().stream().map(c -> new StoredCell(c.type(), c.charge())).collect(Collectors.toList());
+        this.cells = new ArrayList<>(game.cells().size());
+        this.blasted = new ArrayList<>(game.cells().size());
+        for (int i = 0; i < game.cells().size(); i++) {
+            final Cell c = game.cells().get(i);
+            this.cells.add(new StoredCell(c.type(), c.charge()));
+            this.blasted.add(c.blasted());
+        }
         this.score = game.score();
     }
 
@@ -45,6 +54,7 @@ public class GameEntity extends PanacheEntity {
         gameEntity.rows = board.rows;
         gameEntity.columns = board.columns;
         gameEntity.cells = new ArrayList<>(board.cells);
+        gameEntity.blasted = List.of();
         gameEntity.started = new Date();
         return gameEntity;
     }

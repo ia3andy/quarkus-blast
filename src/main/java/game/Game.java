@@ -6,10 +6,8 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public record Game(List<Cell> cells, int rows, int columns, int score) {
 
@@ -43,20 +41,21 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
     }
 
     public boolean isCompleted() {
-        return cells.stream().map(Cell::type).allMatch(Objects::isNull);
+        return cells.stream().allMatch(Cell::blasted);
     }
-    public Game blast(Set<Cell> blast) {
+    public Game blast(Set<Cell> reaction, Set<Cell> lonely) {
         List<Cell> newCells = cells.stream()
-                .map(c -> blast.contains(c) ? new Cell(c.row(), c.column(), null, c.charge()) : c)
+                .map(c -> reaction.contains(c) || lonely.contains(c) ? new Cell(c.row(), c.column(), c.type(), c.charge(), true) : c)
                 .collect(Collectors.toList());
-        return new Game(newCells, rows(), columns(), score() + computePoints(blast));
+        return new Game(newCells, rows(), columns(), score() + computePoints(reaction, lonely));
     }
 
     public boolean isAlone(Cell targetCell) {
         for (int[] direction : DIRECTIONS) {
             int newRow = targetCell.row() + direction[0];
             int newColumn = targetCell.column() + direction[1];
-            if (isValidCell(newRow, newColumn)) {
+            Cell neighbor = cell(newRow, newColumn);
+            if (neighbor != null && !neighbor.blasted()) {
                 return false;
             }
         }
@@ -100,9 +99,9 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
     public Game changeCellType(Cell selectedCell, QuarkType newType) {
         final List<Cell> newCells = cells.stream().map(c -> {
             if (selectedCell.equals(c))
-                return new Cell(c.row(), c.column(), newType, c.charge());
-            else if (c.type() == null)
-                return new Cell(selectedCell.row(), selectedCell.column(), c.type(), 0);
+                return new Cell(c.row(), c.column(), newType, c.charge(), c.blasted());
+            else if (c.blasted())
+                return new Cell(selectedCell.row(), selectedCell.column(), c.type(), 0, true);
             return c;
         }).collect(Collectors.toList());
         return new Game(newCells, rows(), columns(), score());
@@ -113,26 +112,21 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
         if (selectedCell == null) {
             throw new IllegalStateException("Invalid selected cell: " + row + ":" + column);
         }
-        if (game.isAlone(selectedCell)) {
-            return game.blast(Set.of(selectedCell));
-        }
         final Game updated = game.changeCellType(selectedCell, type);
         final Set<Cell> reaction = updated.detectReactionGroup(row, column);
         final Set<Cell> lonely = updated.detectLonely();
-        final Set<Cell> blast = new HashSet<>();
-        blast.addAll(reaction);
-        blast.addAll(lonely);
-        return updated.blast(reaction);
+        return updated.blast(reaction, lonely);
     }
 
     private Set<Cell> detectLonely() {
         return cells.stream().filter(this::isAlone).collect(Collectors.toSet());
     }
 
-    static int computePoints(Collection<Cell> group) {
-        int size = group.size();
-        int charge = group.stream().mapToInt(Cell::charge).sum();
-        return charge * size;
+    static int computePoints(Collection<Cell> reaction, Set<Cell> lonely) {
+        int size = reaction.size();
+        int charge = reaction.stream().mapToInt(Cell::charge).sum();
+        int lonelyCharge = lonely.stream().mapToInt(Cell::charge).sum();
+        return charge * size + lonelyCharge;
     }
 
 }

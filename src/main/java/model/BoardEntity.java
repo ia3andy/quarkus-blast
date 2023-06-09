@@ -36,16 +36,17 @@ public class BoardEntity extends PanacheEntity {
     }
 
     public Game toGame() {
-        List<Cell> gameCells = toGameCells(cells, columns);
+        List<Cell> gameCells = toGameCells(cells, List.of(), columns);
         return new Game(gameCells, rows, columns, 0);
     }
 
-    static List<Cell> toGameCells(List<StoredCell> cells, int columns) {
+    static List<Cell> toGameCells(List<StoredCell> cells, List<Boolean> blasted, int columns) {
         List<Cell> gameCells = new ArrayList<>();
         for (int i = 0; i < cells.size(); i++) {
             final int[] coords = Game.coords(i, columns);
             final StoredCell storedCell = cells.get(i);
-            gameCells.add(new Cell(coords[0], coords[1], storedCell.type(), storedCell.charge()));
+            final Boolean b = blasted.isEmpty() ? false : blasted.get(i);
+            gameCells.add(new Cell(coords[0], coords[1], storedCell.type(), storedCell.charge(), b));
         }
         return gameCells;
     }

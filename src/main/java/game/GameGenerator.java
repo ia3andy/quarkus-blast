@@ -21,7 +21,7 @@ public class GameGenerator {
         for (int row = 0; row < rows; row++) {
             for (int column = 0; column < columns; column++) {
                 QuarkType randomQuark = getRandomQuarkType();
-                cells.add(new Cell(row, column, randomQuark, random.nextInt(minCharge, maxCharge)));
+                cells.add(new Cell(row, column, randomQuark, random.nextInt(minCharge, maxCharge), false));
             }
         }
         return cells;
