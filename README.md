@@ -2,6 +2,7 @@
 
 This project is built with [Quarkus](quarkus.io), the Supersonic Subatomic Java Framework, [Quarkus Renarde]([url](https://github.com/quarkiverse/quarkus-renarde)), the [Quarkus Web Bundler]([url](https://github.com/quarkiverse/quarkus-web-bundler)) and [htmx](https://htmx.org/). It is a fun and animated board game to push to boundaries of htmx and server side rendering to its limit.
 
+![blast](https://github.com/ia3andy/quarkus-blast/assets/2223984/a47e1572-ed38-46ea-94f1-c0f33a65bd0a)
 
 ## Install the Quarkus CLI
 
