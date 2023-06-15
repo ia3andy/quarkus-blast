@@ -1,5 +1,6 @@
 package util;
 
+import io.quarkus.logging.Log;
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -17,8 +18,10 @@ public class Startup {
     /**
      * This method is executed at the start of your application
      */
+	@io.quarkus.runtime.Startup
     @Transactional
-    public void start(@Observes StartupEvent evt) throws IOException {
+    public void start() throws IOException {
+		Log.info("stef");
         final InputStream boards = Startup.class.getResourceAsStream("/boards.json");
         final String boardsJson = new String(boards.readAllBytes(), StandardCharsets.UTF_8);
         final JsonArray boardsList = new JsonArray(boardsJson);
