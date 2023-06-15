@@ -71,7 +71,7 @@ public class QuarkusBlast extends HxController {
     @Path("/")
     public TemplateInstance index() {
         final List<BoardEntity> boards = BoardEntity.listAll();
-        final BoardEntity board = BoardEntity.findAll().firstResult();
+        final BoardEntity board = boards.get(0);
         final GameEntity game = findOrCreateBoardGame(board);
         return Templates.index(new GameData(game), boards);
     }
@@ -103,7 +103,6 @@ public class QuarkusBlast extends HxController {
         if (played.isCompleted()) {
             game.completed = Timestamp.from(Instant.now());
         }
-        game.persist();
         game(id);
     }
 
