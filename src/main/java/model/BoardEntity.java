@@ -1,19 +1,19 @@
 package model;
 
-import game.Cell;
-import game.Game;
-import game.QuarkType;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Entity;
-import model.GameEntity.StoredCell;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import game.Cell;
+import game.Game;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Entity;
+import model.GameEntity.StoredCell;
 
 @Entity
 public class BoardEntity extends PanacheEntity {

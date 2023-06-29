@@ -9,24 +9,34 @@
 <body>
     <main hx-ext="morph">
         <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
-            <h3>Boards</h3>
-            {#include QuarkusBlast/boardsNav.html}{/include}
+       		{#user inject:user img=true size=20/}
+            {#if inject:user}
+            	<h3>Boards</h3>
+	            {#include QuarkusBlast/boardsNav.html}{/include}
+	        {/if}
             <ul class="nav nav-pills flex-column mb-auto">
-                {#if game.id}
-	                <li class="nav-item" hx-push-url="true" hx-post="{uri:QuarkusBlast.restartGame(game.id)}" hx-target="#content">
-                    <button class="nav-link">
-                        <i class="bi bi-arrow-clockwise"></i>
-                        Restart
-                    </button>
-                  </li>
+                {#if !inject:user}
+                	Login with:
+                    <li class="nav-item"><a class="nav-link" href="{uri:RenardeSecurityController.loginUsingOidc('github')}"><img src="/static/images/signin-github.svg" height="16px" style="vertical-align: text-top"/> GitHub</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{uri:RenardeSecurityController.loginUsingOidc('google')}"><img src="/static/images/signin-google.svg" height="16px" style="vertical-align: text-top"/> Google</a></li>
+                {#else}
+                    <li class="nav-item"><a class="nav-link" aria-current="page" href="{uri:RenardeSecurityController.logout()}">Logout</a></li>
+                    {#if game.id}
+	                    <li class="nav-item" hx-push-url="true" hx-post="{uri:QuarkusBlast.restartGame(game.id)}" hx-target="#content">
+                        <button class="nav-link">
+                            <i class="bi bi-arrow-clockwise"></i>
+                            Restart
+                        </button>
+                      </li>
+                    {/if}
+                    
+                    <li class="nav-item" hx-push-url="true" hx-get="{uri:QuarkusBlast.createNewBoard}" hx-target="#content">
+                        <button class="nav-link">
+                            <i class="bi bi-plus-square-dotted"></i>
+                            Create new board
+                        </button>
+                    </li>
                 {/if}
-
-                <li class="nav-item" hx-push-url="true" hx-get="{uri:QuarkusBlast.createNewBoard}" hx-target="#content">
-                    <button class="nav-link">
-                        <i class="bi bi-plus-square-dotted"></i>
-                        Create new board
-                    </button>
-                </li>
             </ul>
         </div>
         <div id="content" class="d-flex flex-column flex-grow-1 p-3 bg-light">

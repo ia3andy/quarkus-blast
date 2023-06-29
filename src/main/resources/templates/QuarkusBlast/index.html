@@ -1,69 +1,75 @@
 {#include main.html}
 
-{#if game}
-{#fragment id=game}
-<div class="container text-center game-container">
-    <h1>Welcome to Quarkus Blast</h1>
-
-    <div class="container">
-        {#if game.completed}
-        <div class="alert alert-success d-flex align-items-center mt-5" role="alert" _="on load call playSound('blasted', 100)">
-            <i class="blast-score bi flex-shrink-0 me-2"></i>
-            <div>
-                Congratulation, you blasted it all, your subatomic score is: <b>{game.score}</b>
-            </div>
-        </div>
-        {#else}
-        <div class="game-grid container text-center">
-            {#for row in game.grid()}
-            <div class="row">
-                {#for col in row}
-                {#if !col.blasted}
-                <div class="col cell {col.type}" hx-trigger="blastQuark"
-                     hx-post="{uri:QuarkusBlast.play(game.id, col.row, col.column)}"
-                     hx-vals='js:\{type: event.detail.type.toUpperCase()}' hx-target="#content"
-                     _="on dragover or dragenter halt the event
-                                then add .dragged to target
-                                on dragleave remove .dragged from target
-                                on drop get event.dataTransfer.getData('text/plain')
-                                then send blastQuark(type:it)
-                               "
-                >
-                    {col.charge}
-                </div>
-                {#else if col.charge > 0}
-                <div class="col cell blasted blast-effect" _="on load call playSound('{col.type}', {col.charge}/1000)"></div>
-                {#else}
-                <div class="col cell blasted"></div>
-                {/if}
-                {/for}
-            </div>
-            {/for}
-        </div>
-        <div class="score-container mt-2">
-            <div class="score-line"></div>
-            <div class="score">{game.score} {#if game.score > 0}points{#else}point{/if}</div>
-        </div>
-        <div class="quark-picker container text-center">
-            <div class="row" _="on dragstart call event.dataTransfer.setData('text/plain',target.textContent)">
-                {#for type in quarkTypes}
-                <div class="col quark-type {type}" draggable='true'>{type}</div>
-                {/for}
-            </div>
-            {#if game.score == 0}
-            <div class="alert alert-primary d-flex align-items-center guide" role="alert">
-                <i class="bi bi-info-circle flex-shrink-0 me-2"></i>
+{#if !inject:user}
+    <div class="container text-center game-container">
+        <h1>Welcome to Quarkus Blast</h1>
+        Please login (on the left menu) before you can do anything.
+    </div>
+{#else}
+    {#if game}
+    {#fragment id=game}
+    <div class="container text-center game-container">
+        <h1>Welcome to Quarkus Blast</h1>
+    
+        <div class="container">
+            {#if game.completed}
+            <div class="alert alert-success d-flex align-items-center mt-5" role="alert" _="on load call playSound('blasted', 100)">
+                <i class="blast-score bi flex-shrink-0 me-2"></i>
                 <div>
-                    Create subatomic reactions by strategically dropping your Quarks on the grid. The size of the blast is
-                    determined by the number of Quarks in the chain and their combined charge.
+                    Congratulation, you blasted it all, your subatomic score is: <b>{game.score}</b>
                 </div>
+            </div>
+            {#else}
+            <div class="game-grid container text-center">
+                {#for row in game.grid()}
+                <div class="row">
+                    {#for col in row}
+                    {#if !col.blasted}
+                    <div class="col cell {col.type}" hx-trigger="blastQuark"
+                         hx-post="{uri:QuarkusBlast.play(game.id, col.row, col.column)}"
+                         hx-vals='js:\{type: event.detail.type.toUpperCase()}' hx-target="#content"
+                         _="on dragover or dragenter halt the event
+                                    then add .dragged to target
+                                    on dragleave remove .dragged from target
+                                    on drop get event.dataTransfer.getData('text/plain')
+                                    then send blastQuark(type:it)
+                                   "
+                    >
+                        {col.charge}
+                    </div>
+                    {#else if col.charge > 0}
+                    <div class="col cell blasted blast-effect" _="on load call playSound('{col.type}', {col.charge}/1000)"></div>
+                    {#else}
+                    <div class="col cell blasted"></div>
+                    {/if}
+                    {/for}
+                </div>
+                {/for}
+            </div>
+            <div class="score-container mt-2">
+                <div class="score-line"></div>
+                <div class="score">{game.score} {#if game.score > 0}points{#else}point{/if}</div>
+            </div>
+            <div class="quark-picker container text-center">
+                <div class="row" _="on dragstart call event.dataTransfer.setData('text/plain',target.textContent)">
+                    {#for type in quarkTypes}
+                    <div class="col quark-type {type}" draggable='true'>{type}</div>
+                    {/for}
+                </div>
+                {#if game.score == 0}
+                <div class="alert alert-primary d-flex align-items-center guide" role="alert">
+                    <i class="bi bi-info-circle flex-shrink-0 me-2"></i>
+                    <div>
+                        Create subatomic reactions by strategically dropping your Quarks on the grid. The size of the blast is
+                        determined by the number of Quarks in the chain and their combined charge.
+                    </div>
+                </div>
+                {/if}
             </div>
             {/if}
         </div>
-        {/if}
     </div>
-</div>
-
-{/fragment}
+    
+    {/fragment}
+    {/if}
 {/if}
-

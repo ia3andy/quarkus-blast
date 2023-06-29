@@ -1,27 +1,26 @@
 package model;
 
-import game.Cell;
-import game.Game;
-import game.QuarkType;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import org.hibernate.annotations.Columns;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import game.Cell;
+import game.Game;
+import game.QuarkType;
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class GameEntity extends PanacheEntity {
 
-    public Long boardId;
+	@ManyToOne
+	public BoardEntity board;
 
     public int rows;
     public int columns;
@@ -38,8 +37,11 @@ public class GameEntity extends PanacheEntity {
 
     public Timestamp completed = null;
 
-    public static Optional<GameEntity> findRunningGame(Long boardId) {
-        return find("boardId = ?1 and completed is null", boardId).firstResultOptional();
+    @ManyToOne
+	public User user;
+
+    public static Optional<GameEntity> findRunningGame(User user, BoardEntity board) {
+        return find("user = ?1 AND board = ?2 and completed is null", user, board).firstResultOptional();
     }
 
     public Game toGame() {
@@ -60,20 +62,21 @@ public class GameEntity extends PanacheEntity {
         this.score = game.score();
     }
 
-    public static GameEntity findOrCreateBoardGame(BoardEntity board) {
-        final Optional<GameEntity> runningGame = GameEntity.findRunningGame(board.id);
-        return runningGame.orElseGet(() -> createBoardGame(board));
+    public static GameEntity findOrCreateBoardGame(User user, BoardEntity board) {
+        final Optional<GameEntity> runningGame = GameEntity.findRunningGame(user, board);
+        return runningGame.orElseGet(() -> createBoardGame(user, board));
     }
 
-    public static GameEntity createBoardGame(BoardEntity board) {
+    public static GameEntity createBoardGame(User user, BoardEntity board) {
         final GameEntity game = GameEntity.fromBoard(board);
+        game.user = user;
         game.persist();
         return game;
     }
 
     public static GameEntity fromBoard(BoardEntity board) {
         final GameEntity gameEntity = new GameEntity();
-        gameEntity.boardId = board.id;
+        gameEntity.board = board;
         gameEntity.rows = board.rows;
         gameEntity.columns = board.columns;
         gameEntity.cells = new ArrayList<>(board.cells);

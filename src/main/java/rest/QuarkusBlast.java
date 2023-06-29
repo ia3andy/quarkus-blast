@@ -5,11 +5,14 @@ import game.Game;
 import game.GameGenerator;
 import game.QuarkType;
 import io.quarkiverse.renarde.htmx.HxController;
+import io.quarkiverse.renarde.security.RenardeSecurity;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateGlobal;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.runtime.util.StringUtil;
+import io.quarkus.security.Authenticated;
 import io.smallrye.common.annotation.Blocking;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -18,6 +21,8 @@ import jakarta.ws.rs.Path;
 import me.atrox.haikunator.Haikunator;
 import model.BoardEntity;
 import model.GameEntity;
+import model.User;
+
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.RestPath;
 
@@ -67,13 +72,25 @@ public class QuarkusBlast extends HxController {
         public static native TemplateInstance createNewBoard$content(CreateBoardData board);
     }
 
+    @Inject
+    RenardeSecurity security;
+
+    private User getUser() {
+    	return (User) security.getUser();
+    }
+    
     @Transactional
     @Path("/")
     public TemplateInstance index() {
-        final List<BoardEntity> boards = BoardEntity.listAll();
-        final BoardEntity board = boards.get(0);
-        final GameEntity game = findOrCreateBoardGame(board);
-        return Templates.index(new GameData(game), boards);
+    	User user = getUser();
+    	if(user != null) {
+    		final List<BoardEntity> boards = BoardEntity.listAll();
+    		final BoardEntity board = boards.get(0);
+    		final GameEntity game = findOrCreateBoardGame(user, board);
+    		return Templates.index(new GameData(game), boards);
+    	} else {
+    		return Templates.index(null, null);
+    	}
     }
 
     public TemplateInstance boardsNav() {
@@ -91,6 +108,7 @@ public class QuarkusBlast extends HxController {
                 Templates.createNewBoard(boards, board);
     }
 
+    @Authenticated
     @POST
     public void play(@NotNull @RestPath Long id, @NotNull @RestPath int row, @NotNull @RestPath int column,
             @NotNull @RestForm("type")
@@ -106,24 +124,25 @@ public class QuarkusBlast extends HxController {
         game(id);
     }
 
+    @Authenticated
     @POST
     public void startGame(@NotNull @RestPath Long id) {
         onlyHxRequest();
         final BoardEntity board = BoardEntity.findById(id);
         notFoundIfNull(board);
-        final GameEntity gameToPlay = findOrCreateBoardGame(board);
+        final GameEntity gameToPlay = findOrCreateBoardGame(getUser(), board);
         game(gameToPlay.id);
     }
 
+    @Authenticated
     @POST
     public void restartGame(@NotNull @RestPath Long id) {
         onlyHxRequest();
         final GameEntity existingGame = GameEntity.findById(id);
         notFoundIfNull(existingGame);
-        final BoardEntity board = BoardEntity.findById(existingGame.boardId);
-        notFoundIfNull(board);
+        final BoardEntity board = existingGame.board;
         existingGame.delete();
-        final GameEntity gameToPlay = GameEntity.createBoardGame(board);
+        final GameEntity gameToPlay = GameEntity.createBoardGame(getUser(), board);
         game(gameToPlay.id);
     }
 
@@ -137,6 +156,7 @@ public class QuarkusBlast extends HxController {
                 Templates.gameNotFound(id);
     }
 
+    @Authenticated
     @POST
     public void newBoard(@RestForm String name, @RestForm @Positive int rows, @RestForm @Positive int columns,
             @RestForm @Positive int minCharge, @RestForm @Positive int maxCharge) {
@@ -146,10 +166,11 @@ public class QuarkusBlast extends HxController {
         String boardName = StringUtil.isNullOrEmpty(name) ? new Haikunator().haikunate() : name;
         final BoardEntity board = BoardEntity.fromCells(boardName, cells, rows, columns);
         board.persist();
-        final GameEntity game = findOrCreateBoardGame(board);
+        final GameEntity game = findOrCreateBoardGame(getUser(), board);
         game(game.id);
     }
 
+    @Authenticated
     @POST
     public void saveScore(@NotNull @RestPath Long id, @RestForm String nickname) {
         onlyHxRequest();
