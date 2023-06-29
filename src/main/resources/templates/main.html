@@ -12,6 +12,15 @@
             <h3>Boards</h3>
             {#include QuarkusBlast/boardsNav.html}{/include}
             <ul class="nav nav-pills flex-column mb-auto">
+                {#if game.id}
+	                <li class="nav-item" hx-push-url="true" hx-post="{uri:QuarkusBlast.restartGame(game.id)}" hx-target="#content">
+                    <button class="nav-link">
+                        <i class="bi bi-arrow-clockwise"></i>
+                        Restart
+                    </button>
+                  </li>
+                {/if}
+
                 <li class="nav-item" hx-push-url="true" hx-get="{uri:QuarkusBlast.createNewBoard}" hx-target="#content">
                     <button class="nav-link">
                         <i class="bi bi-plus-square-dotted"></i>

@@ -21,6 +21,8 @@ import model.GameEntity;
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.RestPath;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +32,7 @@ import static game.GameGenerator.DEFAULT_COLUMNS;
 import static game.GameGenerator.DEFAULT_MAX_CHARGE;
 import static game.GameGenerator.DEFAULT_MIN_CHARGE;
 import static game.GameGenerator.DEFAULT_ROWS;
+import static model.GameEntity.findOrCreateBoardGame;
 
 @Path("/")
 @Blocking
@@ -69,7 +72,8 @@ public class QuarkusBlast extends HxController {
     public TemplateInstance index() {
         final List<BoardEntity> boards = BoardEntity.listAll();
         final BoardEntity board = BoardEntity.findAll().firstResult();
-        return Templates.index(new GameData(createBoardGame(board)), boards);
+        final GameEntity game = findOrCreateBoardGame(board);
+        return Templates.index(new GameData(game), boards);
     }
 
     public TemplateInstance boardsNav() {
@@ -97,7 +101,7 @@ public class QuarkusBlast extends HxController {
         final Game played = Game.play(game.toGame(), row, column, type);
         game.setGame(played);
         if (played.isCompleted()) {
-            game.completed = new Date();
+            game.completed = Timestamp.from(Instant.now());
         }
         game.persist();
         game(id);
@@ -106,19 +110,22 @@ public class QuarkusBlast extends HxController {
     @POST
     public void startGame(@NotNull @RestPath Long id) {
         onlyHxRequest();
-        game(createBoardGame(id).id);
-    }
-
-    private GameEntity createBoardGame(Long id) {
         final BoardEntity board = BoardEntity.findById(id);
         notFoundIfNull(board);
-        return createBoardGame(board);
+        final GameEntity gameToPlay = findOrCreateBoardGame(board);
+        game(gameToPlay.id);
     }
 
-    private static GameEntity createBoardGame(BoardEntity board) {
-        final GameEntity game = GameEntity.fromBoard(board);
-        game.persist();
-        return game;
+    @POST
+    public void restartGame(@NotNull @RestPath Long id) {
+        onlyHxRequest();
+        final GameEntity existingGame = GameEntity.findById(id);
+        notFoundIfNull(existingGame);
+        final BoardEntity board = BoardEntity.findById(existingGame.boardId);
+        notFoundIfNull(board);
+        existingGame.delete();
+        final GameEntity gameToPlay = GameEntity.createBoardGame(board);
+        game(gameToPlay.id);
     }
 
     public TemplateInstance game(@NotNull @RestPath Long id) {
@@ -140,7 +147,7 @@ public class QuarkusBlast extends HxController {
         String boardName = StringUtil.isNullOrEmpty(name) ? new Haikunator().haikunate() : name;
         final BoardEntity board = BoardEntity.fromCells(boardName, cells, rows, columns);
         board.persist();
-        final GameEntity game = createBoardGame(board);
+        final GameEntity game = findOrCreateBoardGame(board);
         game(game.id);
     }
 
