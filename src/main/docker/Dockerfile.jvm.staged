@@ -26,7 +26,8 @@ COPY pom.xml .
 RUN mvn dependency:go-offline
 
 COPY src src
-RUN mvn package -Dmaven.test.skip=true
+RUN mkdir -p /build/target/temp
+RUN mvn package -Dmaven.test.skip=true -Djava.io.tmpdir=/build/target/tmp
 
 RUN grep version /build/target/maven-archiver/pom.properties | cut -d '=' -f2 >.env-version
 RUN grep artifactId /build/target/maven-archiver/pom.properties | cut -d '=' -f2 >.env-id
