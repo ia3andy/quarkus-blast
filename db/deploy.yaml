@@ -16,7 +16,7 @@ items:
         spec:
           containers:
             - name: postgres
-              image: postgres:15.3
+              image: ostgres-quarkus-blast:latest
               ports:
                 - name: postgres
                   containerPort: 5432

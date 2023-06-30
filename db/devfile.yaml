@@ -1,0 +1,29 @@
+schemaVersion: 2.2.0
+metadata:
+  name: quarkus-blast-postgres
+components:
+  - name: build
+    image:
+      imageName: postgres-quarkus-blast:latest
+      dockerfile:
+        uri: Dockerfile
+        buildContext: .
+        rootRequired: false
+  - name: kubernetes-deploy
+    kubernetes:
+      uri: ./deploy.yaml
+commands:
+  - id: build-image
+    apply:
+      component: image-build
+  - id: deployk8s
+    apply:
+      component: kubernetes-deploy
+  - id: deploy
+    composite:
+      commands:
+        - build-image
+        - deployk8s
+      group:
+        kind: deploy
+        isDefault: true
