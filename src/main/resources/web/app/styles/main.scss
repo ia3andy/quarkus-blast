@@ -1,0 +1,35 @@
+@font-face {
+  font-family: 'SyneMono';
+  src: url("../fonts/SyneMono-Regular.ttf") format("truetype");
+}
+
+@import "bootstrap/dist/css/bootstrap.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "variables";
+
+
+html, body {
+  font-family: SyneMono, monospace;
+  height: -webkit-fill-available;
+}
+
+main {
+  display: flex;
+  flex-wrap: nowrap;
+  height: 100vh;
+  height: -webkit-fill-available;
+  max-height: 100vh;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+h1 {
+  text-align: center;
+}
+
+#content {
+  overflow-y: auto;
+}
+
+@import "nav";
+@import "blast";

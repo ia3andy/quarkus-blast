@@ -1,26 +1,26 @@
 package model;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
 import game.Cell;
 import game.Game;
 import game.QuarkType;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class GameEntity extends PanacheEntity {
 
-	@ManyToOne
-	public BoardEntity board;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private BoardEntity board;
 
     public int rows;
     public int columns;
@@ -39,6 +39,10 @@ public class GameEntity extends PanacheEntity {
 
     @ManyToOne
 	public User user;
+
+    public BoardEntity getBoard() {
+        return board;
+    }
 
     public static Optional<GameEntity> findRunningGame(User user, BoardEntity board) {
         return find("user = ?1 AND board = ?2 and completed is null", user, board).firstResultOptional();

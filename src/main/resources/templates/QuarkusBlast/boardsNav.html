@@ -1,10 +1,10 @@
-<ul class="nav nav-pills flex-column mb-auto" hx-trigger="refreshBoards from:body" hx-get="{uri:QuarkusBlast.boardsNav}" hx-swap="outerHTML">
-    {#for board in boards}
-    <li class="nav-item " >
-        <button class="nav-link" hx-post="{uri:QuarkusBlast.startGame(board.id)}" hx-target="#content" hx-swap="innerHTML">
-            <i class="me bi bi-grid"></i>
-            {board.name}
-        </button>
-    </li>
-    {/for}
+<ul class="nav nav-pills flex-column mb-auto flex-grow-1" hx-trigger="refreshBoards from:body" hx-get="{uri:QuarkusBlast.boardsNav}" hx-swap="outerHTML">
+  {#for board in boards}
+  <li class="nav-item " >
+    <button class="nav-link" hx-post="{uri:QuarkusBlast.startGame(board.id)}" hx-target="#content" hx-swap="innerHTML">
+        <i class="me bi bi-grid"></i>
+        {board.name}
+    </button>
+  </li>
+  {/for}
 </ul>

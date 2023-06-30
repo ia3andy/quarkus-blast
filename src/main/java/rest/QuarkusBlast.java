@@ -140,7 +140,7 @@ public class QuarkusBlast extends HxController {
         onlyHxRequest();
         final GameEntity existingGame = GameEntity.findById(id);
         notFoundIfNull(existingGame);
-        final BoardEntity board = existingGame.board;
+        final BoardEntity board = existingGame.getBoard();
         existingGame.delete();
         final GameEntity gameToPlay = GameEntity.createBoardGame(getUser(), board);
         game(gameToPlay.id);

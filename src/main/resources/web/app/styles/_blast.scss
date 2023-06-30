@@ -1,26 +1,3 @@
-@font-face {
-  font-family: 'SyneMono';
-  src: url("fonts/SyneMono-Regular.ttf") format("truetype");
-}
-
-html, body {
-  font-family: SyneMono, monospace;
-  height: -webkit-fill-available;
-}
-
-main {
-  display: flex;
-  flex-wrap: nowrap;
-  height: 100vh;
-  height: -webkit-fill-available;
-  max-height: 100vh;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-h1 {
-  text-align: center;
-}
 
 .cell, .quark-type {
   padding: 75px 5px 5px;
@@ -36,32 +13,32 @@ h1 {
   border-radius: 10px;
 
   &.up {
-    background-image: url("images/up.svg");
+    background-image: url("../images/up.svg");
   }
 
   &.down {
-    background-image: url("images/down.svg");
+    background-image: url("../images/down.svg");
   }
 
   &.charm {
-    background-image: url("images/charm.svg");
+    background-image: url("../images/charm.svg");
   }
 
   &.strange {
-    background-image: url("images/strange.svg");
+    background-image: url("../images/strange.svg");
   }
 
   &.top {
-    background-image: url("images/top.svg");
+    background-image: url("../images/top.svg");
   }
 
   &.bottom {
-    background-image: url("images/bottom.svg");
+    background-image: url("../images/bottom.svg");
   }
 
   &.blasted, &.dragged {
     cursor: auto;
-    background-image: url("images/blasted.svg") !important;
+    background-image: url("../images/blasted.svg") !important;
   }
 
   &.blasted {
@@ -104,7 +81,7 @@ h1 {
 }
 
 .blast-score {
-  background-image: url("images/blasted.svg");
+  background-image: url("../images/blasted.svg");
   height: 50px;
   width: 45px;
   background-size: 40px;
