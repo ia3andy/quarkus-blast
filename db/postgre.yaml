@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: v1
+    kind: Deployment
+    metadata:
+      name: postgres
+      labels:
+        app: postgres
+    spec:
+      template:
+        metadata:
+          name: postgres
+          app:
+            name: postgres
+        spec:
+          containers:
+            - name: postgres
+              image: postgres:15.3
+              ports:
+                - name: postgres
+                  containerPort: 5432
+                  volumeMounts:
+                    - name: pg-storage
+                      mountPath: /var/lib/postgresql/data
+              env:
+                - name: POSTGRES_USER
+                  value: blast
+                - name: POSTGRES_PASSWORD
+                  value: blast
+          volumes:
+            - name: pg-storage
+              persistentVolumeClaim:
+                claimName: pg-storage
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: postgres
+      labels:
+        app: postgres
+        name: postgres
+    spec:
+      ports:
+        - port: 5432
+          targetPort: 5432
+  - apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: pg-storage
+      labels:
+        app: postgres
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
