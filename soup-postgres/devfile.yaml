@@ -18,7 +18,7 @@ components:
       deployment/memoryRequest: 128Mi
       deployment/container-port: 5432
     kubernetes:
-      uri: deploy.yaml
+      uri: base/deploy.yaml
 commands:
   - id: db-build
     apply:
