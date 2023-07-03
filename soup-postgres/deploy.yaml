@@ -1,87 +1,87 @@
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: blast-postgres-1
-  labels:
-    app: quarkus-blast
-    app.kubernetes.io/component: blast-postgres
-    app.kubernetes.io/instance: quarkus-blast
-    app.kubernetes.io/name: quarkus-blast
-    component: blast-postgres
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: quarkus-blast
-      component: blast-postgres
-  template:
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: apps/v1
+    kind: Deployment
     metadata:
+      name: blast-postgres
       labels:
         app: quarkus-blast
+        app.kubernetes.io/component: blast-postgres
+        app.kubernetes.io/instance: quarkus-blast
+        app.kubernetes.io/name: quarkus-blast
         component: blast-postgres
     spec:
-      containers:
-        - name: blast-postgres
-          image: blast-postgres:latest
-          env:
-            - name: PGDATA
-              value: /work/data
-            - name: POSTGRES_PASSWORD
-              value: blast
-            - name: POSTGRES_USER
-              value: blast
-          ports:
-            - containerPort: 5432
-              name: db-port
-          resources:
-            requests:
-              cpu: "200m"
-              memory: "128Mi"
-            limits:
-              cpu: "500m"
-              memory: "256Mi"
-          volumeMounts:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: quarkus-blast
+          component: blast-postgres
+      template:
+        metadata:
+          labels:
+            app: quarkus-blast
+            component: blast-postgres
+        spec:
+          containers:
+            - name: blast-postgres
+              image: quarkus-blast/blast-postgres:latest
+              env:
+                - name: PGDATA
+                  value: /work/data
+                - name: POSTGRES_PASSWORD
+                  value: blast
+                - name: POSTGRES_USER
+                  value: blast
+              ports:
+                - containerPort: 5432
+                  name: db-port
+              resources:
+                requests:
+                  cpu: "200m"
+                  memory: "128Mi"
+                limits:
+                  cpu: "500m"
+                  memory: "256Mi"
+              volumeMounts:
+                - name: blast-postgres-data
+                  mountPath: /work
+          volumes:
             - name: blast-postgres-data
-              mountPath: /work
-      volumes:
-        - name: blast-postgres-data
-          persistentVolumeClaim:
-            claimName: blast-postgres-data
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: blast-postgres-service
-  labels:
-    app: quarkus-blast
-    app.kubernetes.io/component: blast-postgres
-    app.kubernetes.io/instance: quarkus-blast
-    app.kubernetes.io/name: quarkus-blast
-    component: blast-postgres
-spec:
-  type: NodePort
-  selector:
-    app: quarkus-blast
-    component: blast-postgres
-  ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432
----
-kind: PersistentVolumeClaim
-apiVersion: v1
-metadata:
-  name: blast-postgres-data
-  labels:
-    app: quarkus-blast
-    app.kubernetes.io/component: blast-postgres
-    app.kubernetes.io/instance: quarkus-blast
-    app.kubernetes.io/name: quarkus-blast
-    component: blast-postgres
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
+              persistentVolumeClaim:
+                claimName: blast-postgres-data
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      name: blast-postgres-service
+      labels:
+        app: quarkus-blast
+        app.kubernetes.io/component: blast-postgres
+        app.kubernetes.io/instance: quarkus-blast
+        app.kubernetes.io/name: quarkus-blast
+        component: blast-postgres
+    spec:
+      type: NodePort
+      selector:
+        app: quarkus-blast
+        component: blast-postgres
+      ports:
+        - protocol: TCP
+          port: 5432
+          targetPort: 5432
+  - kind: PersistentVolumeClaim
+    apiVersion: v1
+    metadata:
+      name: blast-postgres-data
+      labels:
+        app: quarkus-blast
+        app.kubernetes.io/component: blast-postgres
+        app.kubernetes.io/instance: quarkus-blast
+        app.kubernetes.io/name: quarkus-blast
+        component: blast-postgres
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
