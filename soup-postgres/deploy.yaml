@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blast-postgres
+  name: blast-postgres-1
   labels:
     app: quarkus-blast
     app.kubernetes.io/component: blast-postgres
