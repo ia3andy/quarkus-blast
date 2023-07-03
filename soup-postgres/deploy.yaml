@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: blast-postgres
-          image: quarkus-blast-postgres:latest
+          image: blast-postgres:latest
           env:
             - name: PGDATA
               value: /work/data
