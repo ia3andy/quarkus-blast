@@ -21,21 +21,10 @@ spec:
           env:
             - name: PGDATA
               value: /work/data
-            - name: POSTGRES_DB
-              valueFrom:
-                secretKeyRef:
-                  name: blast-secret
-                  key: db-name
             - name: POSTGRES_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: blast-secret
-                  key: db-password
+              value: blast
             - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: blast-secret
-                  key: db-user
+              value: blast
           ports:
             - containerPort: 5432
               name: db-port
