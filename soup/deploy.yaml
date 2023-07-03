@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blast-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quarkus-blast
+      component: blast-postgres
+  template:
+    metadata:
+      labels:
+        app: quarkus-blast
+        component: blast-postgres
+    spec:
+      containers:
+        - name: blast-postgres
+          image: quarkus-blast-postgres:latest
+          env:
+            - name: PGDATA
+              value: /work/data
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: blast-secret
+                  key: db-name
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: blast-secret
+                  key: db-password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: blast-secret
+                  key: db-user
+          ports:
+            - containerPort: 5432
+              name: db-port
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: blast-postgres-data
+              mountPath: /work
+      volumes:
+        - name: blast-postgres-data
+          persistentVolumeClaim:
+            claimName: blast-postgres-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blast-postgres-service
+spec:
+  type: NodePort
+  selector:
+    app: quarkus-blast
+    component: blast-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: blast-postgres-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

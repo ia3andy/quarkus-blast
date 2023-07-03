@@ -1,0 +1,36 @@
+schemaVersion: 2.2.0
+metadata:
+  name: quarkus-blast-postgres
+components:
+  - name: db-build
+    image:
+      imageName: quarkus-blast-postgres:latest
+      dockerfile:
+        uri: Dockerfile
+        buildContext: .
+        rootRequired: false
+  - name: db-deploy
+    attributes:
+      deployment/replicas: 1
+      deployment/cpuLimit: '500m'
+      deployment/cpuRequest: 200m
+      deployment/memoryLimit: 256Mi
+      deployment/memoryRequest: 128Mi
+      deployment/container-port: 5432
+    kubernetes:
+      uri: ./deploy.yaml
+commands:
+  - id: db-build
+    apply:
+      component: db-build
+  - id: db-deploy
+    apply:
+      component: db-deploy
+  - id: deploy
+    composite:
+      commands:
+        - db-build
+        - db-deploy
+      group:
+        kind: deploy
+        isDefault: true
