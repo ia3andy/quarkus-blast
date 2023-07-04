@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.transaction.Transactional;
 import model.BoardEntity;
+import model.User;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +27,13 @@ public class Startup {
             final BoardEntity boardEntity = boardsList.getJsonObject(i).mapTo(BoardEntity.class);
             boardEntity.persist();
         }
-
+        User user = new User();
+        user.email = "nobody@example.com";
+        user.firstName = "Testy";
+        user.lastName = "Tester";
+        user.tenantId = "manual";
+        user.authId = "test";
+        user.userName = "Testy Mac Tester";
+        user.persist();
     }
 }

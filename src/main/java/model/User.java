@@ -36,7 +36,7 @@ public class User extends PanacheEntity implements RenardeUser {
 
     @Override
     public String userId() {
-        return tenantId+"/"+authId;
+        return authId;
     }
 
 	//

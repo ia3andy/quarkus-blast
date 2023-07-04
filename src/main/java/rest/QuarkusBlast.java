@@ -5,6 +5,7 @@ import game.Game;
 import game.GameGenerator;
 import game.QuarkType;
 import io.quarkiverse.renarde.htmx.HxController;
+import io.quarkiverse.renarde.router.Router;
 import io.quarkiverse.renarde.security.RenardeSecurity;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateGlobal;
@@ -18,6 +19,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.NewCookie;
+import jakarta.ws.rs.core.Response;
 import me.atrox.haikunator.Haikunator;
 import model.BoardEntity;
 import model.GameEntity;
@@ -77,6 +80,12 @@ public class QuarkusBlast extends HxController {
 
     private User getUser() {
     	return (User) security.getUser();
+    }
+
+    @POST
+    public Response testUserLogin() {
+    	User user = User.findByAuthId("manual", "test");
+    	return Response.seeOther(Router.getURI(QuarkusBlast::index)).cookie(security.makeUserCookie(user)).build();
     }
     
     @Transactional

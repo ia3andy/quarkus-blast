@@ -9,6 +9,9 @@
     Login with:
       {#oidcItem name="github" title="GitHub"/}
       {#oidcItem name="google" title="Google"/}
+      {#form uri:QuarkusBlast.testUserLogin}
+      	<button>Test User</button>
+      {/form}
   {#else}
     <hr>
     {#if game.id}
