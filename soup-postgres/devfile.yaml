@@ -4,7 +4,7 @@ metadata:
 components:
   - name: db-build
     image:
-      imageName: blast-postgres
+      imageName: blast-postgres:latest
       dockerfile:
         uri: Dockerfile
         buildContext: .
@@ -18,7 +18,7 @@ components:
       deployment/memoryRequest: 128Mi
       deployment/container-port: 5432
     kubernetes:
-      uri: base/deploy.yaml
+      uri: deploy.yaml
 commands:
   - id: db-build
     apply:
