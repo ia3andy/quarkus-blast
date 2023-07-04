@@ -4,7 +4,7 @@ metadata:
 components:
   - name: db-build
     image:
-      imageName: blast-postgres:latest
+      imageName: blast-postgres
       dockerfile:
         uri: Dockerfile
         buildContext: .
