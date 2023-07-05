@@ -1,5 +1,6 @@
 package util;
 
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
@@ -27,13 +28,16 @@ public class Startup {
             final BoardEntity boardEntity = boardsList.getJsonObject(i).mapTo(BoardEntity.class);
             boardEntity.persist();
         }
-        User user = new User();
-        user.email = "nobody@example.com";
-        user.firstName = "Testy";
-        user.lastName = "Tester";
-        user.tenantId = "manual";
-        user.authId = "test";
-        user.userName = "Testy Mac Tester";
-        user.persist();
+        if (LaunchMode.current() == LaunchMode.DEVELOPMENT) {
+            User user = new User();
+            user.email = "nobody@example.com";
+            user.firstName = "dev";
+            user.lastName = "dev";
+            user.tenantId = "manual";
+            user.authId = "dev";
+            user.userName = "dev";
+            user.persist();
+        }
+
     }
 }

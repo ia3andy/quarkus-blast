@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Quarkus Blast</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {#bundleStyle /}
     {#bundleScript /}
-</head>
-<body>
+  </head>
+  <body>
     <main hx-ext="morph">
-        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
-       		{#include nav.html /}
-        </div>
-        <div id="content" class="d-flex flex-column flex-grow-1 p-3 bg-light">
+      <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
+        {#include sidebar.html /}
+      </div>
+      <div id="content" class="d-flex flex-column flex-grow-1 p-3 bg-light">
         {#insert /}
-        </div>
+      </div>
     </main>
-</body>
+  </body>
 </html>

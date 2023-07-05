@@ -10,6 +10,7 @@ import io.quarkiverse.renarde.security.RenardeSecurity;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateGlobal;
 import io.quarkus.qute.TemplateInstance;
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.util.StringUtil;
 import io.quarkus.security.Authenticated;
 import io.smallrye.common.annotation.Blocking;
@@ -19,13 +20,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import me.atrox.haikunator.Haikunator;
 import model.BoardEntity;
 import model.GameEntity;
 import model.User;
-
 import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.RestPath;
 
@@ -40,6 +39,7 @@ import static game.GameGenerator.DEFAULT_COLUMNS;
 import static game.GameGenerator.DEFAULT_MAX_CHARGE;
 import static game.GameGenerator.DEFAULT_MIN_CHARGE;
 import static game.GameGenerator.DEFAULT_ROWS;
+import static io.quarkiverse.renarde.htmx.HxController.concatTemplates;
 import static model.GameEntity.findOrCreateBoardGame;
 
 @Path("/")
@@ -51,6 +51,8 @@ public class QuarkusBlast extends HxController {
     public static class Globals {
         public static final List<String> QUARK_TYPES = QuarkType.TYPES.stream().map(Enum::toString).collect(Collectors.toList());
 
+        public static final boolean DEV_MODE = LaunchMode.current() == LaunchMode.DEVELOPMENT;
+
         public static List<String> quarkTypes(){
         	return QUARK_TYPES;
         }
@@ -61,7 +63,7 @@ public class QuarkusBlast extends HxController {
 
         public static native TemplateInstance index(GameData game, List<BoardEntity> boards);
 
-        public static native TemplateInstance boardsNav(List<BoardEntity> boards);
+        public static native TemplateInstance boardsNav(GameData game, List<BoardEntity> boards);
 
         public static native TemplateInstance saveScore(GameData game);
 
@@ -83,8 +85,8 @@ public class QuarkusBlast extends HxController {
     }
 
     @POST
-    public Response testUserLogin() {
-    	User user = User.findByAuthId("manual", "test");
+    public Response devUserLogin() {
+    	User user = User.findByAuthId("manual", "dev");
     	return Response.seeOther(Router.getURI(QuarkusBlast::index)).cookie(security.makeUserCookie(user)).build();
     }
     
@@ -102,15 +104,10 @@ public class QuarkusBlast extends HxController {
     	}
     }
 
-    public TemplateInstance boardsNav() {
+    public TemplateInstance createNewBoard() {
         onlyHxRequest();
         final List<BoardEntity> boards = BoardEntity.listAll();
-        return Templates.boardsNav(boards);
-    }
-
-    public TemplateInstance createNewBoard() {
-        final List<BoardEntity> boards = BoardEntity.listAll();
-        String generatedName = new Haikunator().haikunate();
+        String generatedName = new Haikunator().setTokenLength(0).haikunate();
         final CreateBoardData board = new CreateBoardData(generatedName, DEFAULT_ROWS,
                 DEFAULT_COLUMNS, DEFAULT_MIN_CHARGE, DEFAULT_MAX_CHARGE);
         return isHxRequest() ? Templates.createNewBoard$content(board) :
@@ -149,7 +146,7 @@ public class QuarkusBlast extends HxController {
         onlyHxRequest();
         final GameEntity existingGame = GameEntity.findById(id);
         notFoundIfNull(existingGame);
-        final BoardEntity board = existingGame.getBoard();
+        final BoardEntity board = existingGame.board;
         existingGame.delete();
         final GameEntity gameToPlay = GameEntity.createBoardGame(getUser(), board);
         game(gameToPlay.id);
@@ -160,9 +157,13 @@ public class QuarkusBlast extends HxController {
         hx(HxResponseHeader.PUSH, "/");
         hx(HxResponseHeader.TRIGGER, "refreshBoards");
         final Optional<GameEntity> game = GameEntity.findByIdOptional(id);
-        return game.isPresent() ?
-                Templates.index$game(new GameData(game.get())) :
-                Templates.gameNotFound(id);
+        final List<BoardEntity> boards = BoardEntity.listAll();
+        if (game.isPresent()) {
+            final GameData gameData = new GameData(game.get());
+            return concatTemplates(Templates.index$game(gameData), Templates.boardsNav(gameData, boards));
+        } else {
+            return Templates.gameNotFound(id);
+        }
     }
 
     @Authenticated
@@ -172,7 +173,7 @@ public class QuarkusBlast extends HxController {
         onlyHxRequest();
         GameEntity.deleteAll();
         final List<Cell> cells = gameGenerator.generateCells(rows, columns, minCharge, maxCharge);
-        String boardName = StringUtil.isNullOrEmpty(name) ? new Haikunator().haikunate() : name;
+        String boardName = StringUtil.isNullOrEmpty(name) ? new Haikunator().setTokenLength(0).haikunate() : name;
         final BoardEntity board = BoardEntity.fromCells(boardName, cells, rows, columns);
         board.persist();
         final GameEntity game = findOrCreateBoardGame(getUser(), board);
@@ -191,9 +192,9 @@ public class QuarkusBlast extends HxController {
         board.persist();
     }
 
-    public record GameData(Long id, List<List<Cell>> grid, int score, Date completed) {
+    public record GameData(Long id, Long boardId, String name, List<List<Cell>> grid, int score, Date completed) {
         public GameData(GameEntity game) {
-            this(game.id, game.toGame().asGrid(), game.score, game.completed);
+            this(game.id, game.board.id, game.board.name, game.toGame().asGrid(), game.score, game.completed);
         }
 
     }

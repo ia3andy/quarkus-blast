@@ -1,0 +1,30 @@
+{#user inject:user img=true size=20/}
+{#if inject:user}
+<h3>Boards</h3>
+{#include QuarkusBlast/boardsNav.html /}
+{/if}
+<ul class="nav nav-pills flex-column mb-auto">
+  {#if !inject:user}
+  Login with:
+  {#oidcItem name="github" title="GitHub"/}
+  {#oidcItem name="google" title="Google"/}
+  {#if DEV_MODE}
+  {#form uri:QuarkusBlast.devUserLogin}
+  <button class="nav-link">
+  <i class="bi bi-person-gear"></i>
+  Dev User
+  </button>
+  {/form}
+  {/if}
+  {#else}
+  <hr>
+  {#if game.id}
+  {/if}
+  <li class="nav-item" hx-get="{uri:QuarkusBlast.createNewBoard}" hx-target="#content">
+    <button class="nav-link">
+    <i class="bi bi-plus-square-dotted"></i>
+    Create new board
+    </button>
+  </li>
+  {/if}
+</ul>

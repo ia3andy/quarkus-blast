@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: blast-postgres
-          image: quay.io/tpetkos/blast-postgres:latest
+          image: blast-postgres:latest
           env:
             - name: PGDATA
               value: /work/data

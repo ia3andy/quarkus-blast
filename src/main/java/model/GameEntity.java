@@ -19,8 +19,8 @@ import java.util.Optional;
 @Entity
 public class GameEntity extends PanacheEntity {
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	private BoardEntity board;
+	@ManyToOne
+	public BoardEntity board;
 
     public int rows;
     public int columns;
