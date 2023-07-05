@@ -14,7 +14,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import me.atrox.haikunator.Haikunator;
 import model.User;
-import rest.QuarkusBlast;
+import rest.GameController;
 
 @ApplicationScoped
 public class MySecuritySetup implements RenardeUserProvider, RenardeOidcHandler {
@@ -56,7 +56,7 @@ public class MySecuritySetup implements RenardeUserProvider, RenardeOidcHandler 
             }
             user.persist();
         } // else regular login
-        throw new RedirectException(Response.seeOther(Router.getURI(QuarkusBlast::index)).build());
+        throw new RedirectException(Response.seeOther(Router.getURI(GameController::index)).build());
     }
 
     /**
@@ -73,6 +73,6 @@ public class MySecuritySetup implements RenardeUserProvider, RenardeOidcHandler 
             throw new RedirectException(security.makeLogoutResponse());
         }
         flash.flash("message", "Already logged in");
-        throw new RedirectException(Response.seeOther(Router.getURI(QuarkusBlast::index)).build());
+        throw new RedirectException(Response.seeOther(Router.getURI(GameController::index)).build());
     }
 }

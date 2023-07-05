@@ -1,24 +1,18 @@
 {#include main.html}
-{#if !inject:user}
-<div class="container text-center game-container">
-  <h1>Welcome to Quarkus Blast</h1>
-  Please login (on the left menu) before you can do anything.
-</div>
-{#else}
 {#if game}
-{#fragment id=game}
+{#fragment id=content}
 <div class="container text-center game-container">
   <ul class="game-nav nav nav-pills">
-    <li class="nav-item" hx-push-url="true" hx-post="{uri:QuarkusBlast.restartGame(game.id)}" hx-target="#content">
+    <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content" hx-vals='{"{inject:csrf.parameterName}": "{inject:csrf.token}"}'>
       <button class="nav-link">
       <i class="bi bi-arrow-clockwise"></i>
       Restart
       </button>
     </li>
-    <li class="nav-item" hx-push-url="true" hx-post="{uri:QuarkusBlast.restartGame(game.id)}" hx-target="#content">
+    <li class="nav-item"  hx-target="#content">
       <h1>{game.name}</h1>
     </li>
-    <li class="nav-item" hx-push-url="true" hx-post="{uri:QuarkusBlast.restartGame(game.id)}" hx-target="#content">
+    <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content" hx-vals='{"{inject:csrf.parameterName}": "{inject:csrf.token}"}'>
       <button class="nav-link">
       <i class="bi bi-trophy"></i>
       Leaderboard
@@ -40,8 +34,8 @@
         {#for col in row}
         {#if !col.blasted}
         <div class="col cell {col.type}" hx-trigger="blastQuark"
-          hx-post="{uri:QuarkusBlast.play(game.id, col.row, col.column)}"
-          hx-vals='js:\{type: event.detail.type.toUpperCase()}' hx-target="#content"
+          hx-post="{uri:GameController.play(game.id, col.row, col.column)}"
+          hx-vals='js:\{type: event.detail.type.toUpperCase(),"{inject:csrf.parameterName}":"{inject:csrf.token}"}' hx-target="#content"
           _="on dragover or dragenter halt the event
           then add .dragged to target
           on dragleave remove .dragged from target
@@ -84,5 +78,4 @@
   </div>
 </div>
 {/fragment}
-{/if}
 {/if}

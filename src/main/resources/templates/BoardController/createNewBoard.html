@@ -1,6 +1,6 @@
 {#include main.html}
 {#fragment id=content}
-<form hx-post="{uri:QuarkusBlast.newBoard}">
+<form hx-post="{uri:BoardController.saveBoard}" hx-vals='{"{inject:csrf.parameterName}": "{inject:csrf.token}"}'>
   <h1>New Game Board</h1>
   <div class="mb-3">
     <label for="name" class="form-label">Name</label>

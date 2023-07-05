@@ -12,7 +12,14 @@
         {#include sidebar.html /}
       </div>
       <div id="content" class="d-flex flex-column flex-grow-1 p-3 bg-light">
+      {#if !inject:user}
+        <div class="container text-center game-container">
+          <h1>Welcome to Quarkus Blast</h1>
+          Please login (on the left menu) before you can do anything.
+        </div>
+      {#else}
         {#insert /}
+      {/if}
       </div>
     </main>
   </body>
