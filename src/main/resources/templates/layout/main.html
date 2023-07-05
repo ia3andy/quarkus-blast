@@ -9,7 +9,7 @@
   <body>
     <main hx-ext="morph">
       <div class="sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
-        {#include sidebar.html /}
+        {#include layout/sidebar.html /}
       </div>
       <div id="content" class="d-flex flex-column flex-grow-1 p-3 bg-light">
       {#if !inject:user}

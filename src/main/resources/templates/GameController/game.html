@@ -1,4 +1,4 @@
-{#include main.html}
+{#include layout/main.html}
 {#if game}
 {#fragment id=content}
 <div class="container text-center game-container">
@@ -12,7 +12,7 @@
     <li class="nav-item"  hx-target="#content">
       <h1>{game.name}</h1>
     </li>
-    <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content" hx-vals='{"{inject:csrf.parameterName}": "{inject:csrf.token}"}'>
+    <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content" {#hxCSRF /}>
       <button class="nav-link">
       <i class="bi bi-trophy"></i>
       Leaderboard

@@ -1,6 +1,6 @@
-{#include main.html}
+{#include layout/main.html}
 {#fragment id=content}
-<form hx-post="{uri:BoardController.saveBoard}" hx-vals='{"{inject:csrf.parameterName}": "{inject:csrf.token}"}'>
+<form hx-post="{uri:BoardController.saveBoard}" {#hxCSRF /}>
   <h1>New Game Board</h1>
   <div class="mb-3">
     <label for="name" class="form-label">Name</label>
