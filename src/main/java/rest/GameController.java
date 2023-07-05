@@ -5,6 +5,7 @@ import game.Game;
 import game.GameGenerator;
 import game.QuarkType;
 import io.quarkiverse.renarde.htmx.HxController;
+import io.quarkiverse.renarde.router.Router;
 import io.quarkiverse.renarde.security.RenardeSecurity;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateGlobal;
@@ -17,6 +18,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriBuilder;
 import model.BoardEntity;
 import model.GameEntity;
 import model.User;
@@ -58,9 +61,6 @@ public class GameController extends HxController {
         public static native TemplateInstance saveScore(GameData game);
 
         public static native TemplateInstance game$content(GameData game);
-
-        public static native TemplateInstance gameNotFound(Long id);
-
     }
 
     @Inject
@@ -88,14 +88,15 @@ public class GameController extends HxController {
     @Authenticated
     @Path("/game/{id}")
     public TemplateInstance game(@NotNull @RestPath Long id) {
-        onlyHxRequest();
         final Optional<GameEntity> game = GameEntity.findByIdOptional(id);
         final List<BoardEntity> boards = BoardEntity.listAll();
-        if (game.isPresent()) {
-            final GameData gameData = new GameData(game.get());
+        final GameData gameData = game.map(GameData::new).orElse(null);
+        if (isHxRequest()) {
+            response.headers()
+                    .set("HX-Push-Url", Router.getURI(GameController::game, id).getPath());
             return concatTemplates(Templates.game$content(gameData), Templates.gamePicker(gameData, boards));
         } else {
-            return Templates.gameNotFound(id);
+            return Templates.game(gameData, boards);
         }
     }
 
@@ -103,7 +104,6 @@ public class GameController extends HxController {
     @Transactional
     @Path("/game/start/board/{id}")
     public void startGameFromBoard(@NotNull @RestPath Long id) {
-        onlyHxRequest();
         final BoardEntity board = BoardEntity.findById(id);
         notFoundIfNull(board);
         final GameEntity gameToPlay = findOrCreateBoardGame(getUser(), board);
@@ -132,14 +132,13 @@ public class GameController extends HxController {
     @Authenticated
     @POST
     @Path("/game/restart")
-    public void restart(@NotNull @RestPath Long id) {
+    public Response restart(@NotNull @RestPath Long id) {
         onlyHxRequest();
         final GameEntity existingGame = GameEntity.findById(id);
         notFoundIfNull(existingGame);
         final BoardEntity board = existingGame.board;
         existingGame.delete();
-        final GameEntity gameToPlay = GameEntity.createBoardGame(getUser(), board);
-        game(gameToPlay.id);
+        return seeOther(Router.getURI(GameController::startGameFromBoard, board.id));
     }
 
 

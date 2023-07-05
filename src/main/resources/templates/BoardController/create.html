@@ -1,6 +1,6 @@
 {#include layout/main.html}
 {#fragment id=content}
-<form hx-post="{uri:BoardController.saveBoard}" {#hxCSRF /}>
+<form hx-post="{uri:BoardController.save}" {#hxCSRF /}>
   <h1>New Game Board</h1>
   <div class="mb-3">
     <label for="name" class="form-label">Name</label>

@@ -18,9 +18,7 @@
   {/if}
   {#else}
   <hr>
-  {#if game.id}
-  {/if}
-  <li class="nav-item" hx-get="{uri:BoardController.createNewBoard}" hx-target="#content">
+  <li class="nav-item" hx-push-url="true" hx-get="{uri:BoardController.create}" hx-target="#content">
     <button class="nav-link">
     <i class="bi bi-plus-square-dotted"></i>
     Create new board

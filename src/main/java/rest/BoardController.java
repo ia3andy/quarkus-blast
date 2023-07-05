@@ -24,7 +24,6 @@ import static game.GameGenerator.DEFAULT_COLUMNS;
 import static game.GameGenerator.DEFAULT_MAX_CHARGE;
 import static game.GameGenerator.DEFAULT_MIN_CHARGE;
 import static game.GameGenerator.DEFAULT_ROWS;
-import static model.GameEntity.findOrCreateBoardGame;
 
 @Path("/board")
 @Blocking
@@ -35,29 +34,25 @@ public class BoardController extends HxController {
     @CheckedTemplate
     public static class Templates {
 
-        public static native TemplateInstance createNewBoard(List<BoardEntity> boards,
+        public static native TemplateInstance create(GameController.GameData game, List<BoardEntity> boards,
                 CreateBoardData board);
 
-        public static native TemplateInstance createNewBoard$content(CreateBoardData board);
+        public static native TemplateInstance create$content(CreateBoardData board);
     }
 
     @Authenticated
-    @Path("create")
-
-    public TemplateInstance createNewBoard() {
-        onlyHxRequest();
+    public TemplateInstance create() {
         final List<BoardEntity> boards = BoardEntity.listAll();
         String generatedName = new Haikunator().setTokenLength(0).haikunate();
         final CreateBoardData board = new CreateBoardData(generatedName, DEFAULT_ROWS,
                 DEFAULT_COLUMNS, DEFAULT_MIN_CHARGE, DEFAULT_MAX_CHARGE);
-        return isHxRequest() ? Templates.createNewBoard$content(board) :
-                Templates.createNewBoard(boards, board);
+        return isHxRequest() ? Templates.create$content(board) :
+                Templates.create(null, boards, board);
     }
 
     @Authenticated
     @POST
-    @Path("save")
-    public Response saveBoard(@RestForm String name, @RestForm @Positive int rows, @RestForm @Positive int columns,
+    public Response save(@RestForm String name, @RestForm @Positive int rows, @RestForm @Positive int columns,
             @RestForm @Positive int minCharge, @RestForm @Positive int maxCharge) {
         onlyHxRequest();
         GameEntity.deleteAll();
