@@ -9,7 +9,7 @@ components:
     image:
       imageName: blast-quarkus:latest
       dockerfile:
-        uri: ../../src/main/docker/Dockerfile.jvm.staged
+        uri: src/main/docker/Dockerfile.jvm.staged
         buildContext: ../..
         rootRequired: false
   - name: kubernetes-deploy
