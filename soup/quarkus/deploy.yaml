@@ -27,7 +27,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: blast-quarkus-service
+  name: blast-quarkus
 spec:
 ports:
   - name: http-8081

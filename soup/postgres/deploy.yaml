@@ -43,7 +43,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: blast-postgres-service
+  name: blast-postgres
 spec:
   type: NodePort
   selector:
