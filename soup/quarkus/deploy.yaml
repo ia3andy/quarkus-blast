@@ -15,6 +15,17 @@ spec:
       containers:
         - name: blast-quarkus
           image: blast-quarkus:latest
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: user
           ports:
             - name: http
               containerPort: 8081

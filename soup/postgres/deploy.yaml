@@ -19,9 +19,15 @@ spec:
             - name: PGDATA
               value: /work/data
             - name: POSTGRES_PASSWORD
-              value: blast
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: password
             - name: POSTGRES_USER
-              value: blast
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secrets
+                  key: user
           ports:
             - containerPort: 5432
               name: db-port
