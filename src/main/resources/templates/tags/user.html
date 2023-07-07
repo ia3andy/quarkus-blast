@@ -1,20 +1,21 @@
 {#if it??}
   <div class="user-nav">
-    <!-- FIXME: there appears to be a size value coming from outer space -->
-    <span class="user-link" title="{it.userName}">
-    {#if img??}
-      {#gravatar it.email size=size.or(20) default='mm' /}
-    {/if}
-    {it.userName}
-    </span>
-    <ul class="nav nav-pills flex-column mb-auto"
-      <li class="nav-item">
-        <a class="nav-link" aria-current="page" href="{uri:RenardeSecurityController.logout()}">
-          <i class="bi bi-box-arrow-left"></i>
-          Logout
-        </a>
-      </li>
-    </ul>
+    <div class="dropdown">
+      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        {#if img??}
+          {#gravatar it.email size=size.or(32) default='mm' class="rounded-circle me-2"/}
+        {/if}
+        <strong class="user-link" title="{it.userName}">{it.userName}</strong>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+        <li>
+          <a class="dropdown-item" href="{uri:RenardeSecurityController.logout()}">
+            <i class="bi bi-box-arrow-left"></i>
+            Sign-out
+          </a>
+        </li>
+      </ul>
+    </div>
+
   </div>
-  <hr>
 {/if}

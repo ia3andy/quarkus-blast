@@ -1,52 +1,31 @@
-{#include layout/main.html}
+{#include layout/page.html}
 {#fragment id=content}
 {#if game}
-<div class="container text-center game-container">
-  <ul class="game-nav nav nav-pills">
-    <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content" hx-vals='{"{inject:csrf.parameterName}": "{inject:csrf.token}"}'>
-      <button class="nav-link">
-      <i class="bi bi-arrow-clockwise"></i>
-      Restart
-      </button>
-    </li>
-    <li class="nav-item"  hx-target="#content">
-      <h1>{game.name}</h1>
-    </li>
-    <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content" {#hxCSRF /}>
-      <button class="nav-link">
-      <i class="bi bi-trophy"></i>
-      Leaderboard
-      </button>
-    </li>
-  </ul>
-  <div class="container">
+<div class="container text-center game-container d-flex flex-grow-1 flex-column">
+  <div class="container flex-grow-1 justify-content-center d-flex flex-column order-lg-1">
     {#if game.completed}
     <div class="alert alert-success d-flex align-items-center mt-5" role="alert" _="on load call playSound('blasted', 100)">
       <i class="blast-score bi flex-shrink-0 me-2"></i>
       <div>
         Congratulation, you blasted it all, your subatomic score is: <b>{game.score}</b>
       </div>
+      {#include GameController/saveScore.html}{/include}
     </div>
     {#else}
+
     <div class="game-grid container text-center">
       {#for row in game.grid()}
       <div class="row">
         {#for col in row}
         {#if !col.blasted}
-        <div class="col cell {col.type}" hx-trigger="blastQuark"
+        <div class="col cell {col.type}"
           hx-post="{uri:GameController.play(game.id, col.row, col.column)}"
-          hx-vals='js:\{type: event.detail.type.toUpperCase(),"{inject:csrf.parameterName}":"{inject:csrf.token}"}' hx-target="#content"
-          _="on dragover or dragenter halt the event
-          then add .dragged to target
-          on dragleave remove .dragged from target
-          on drop get event.dataTransfer.getData('text/plain')
-          then send blastQuark(type:it)
-          "
-          >
+          hx-target="#content"
+        >
           {col.charge}
         </div>
         {#else if col.charge > 0}
-        <div class="col cell blasted blast-effect" _="on load call playSound('{col.type}', {col.charge}/1000)"></div>
+        <div class="col cell blasted" _="on load blast(me, '{col.type}', {col.charge}/1000)"></div>
         {#else}
         <div class="col cell blasted"></div>
         {/if}
@@ -54,28 +33,29 @@
       </div>
       {/for}
     </div>
-    <div class="score-container mt-2">
+    <div class="score-container mt-4">
       <div class="score-line"></div>
-      <div class="score">{game.score} {#if game.score > 0}points{#else}point{/if}</div>
-    </div>
-    <div class="quark-picker container text-center">
-      <div class="row" _="on dragstart call event.dataTransfer.setData('text/plain',target.textContent)">
-        {#for type in quarkTypes}
-        <div class="col quark-type {type}" draggable='true'>{type}</div>
-        {/for}
-      </div>
-      {#if game.score == 0}
-      <div class="alert alert-primary d-flex align-items-center guide" role="alert">
-        <i class="bi bi-info-circle flex-shrink-0 me-2"></i>
-        <div>
-          Create subatomic reactions by strategically dropping your Quarks on the grid. The size of the blast is
-          determined by the number of Quarks in the chain and their combined charge.
-        </div>
-      </div>
-      {/if}
+      <div class="score">{game.score} <span class="unit">{#if game.score > 0}points{#else}point{/if}</span></div>
     </div>
     {/if}
   </div>
+  <ul class="game-nav nav nav-pills flex-nowrap align-items-center order-lg-0">
+      <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content">
+        <button class="nav-link">
+        <i class="bi bi-arrow-clockwise"></i>
+        <span class="d-none d-lg-block">Restart</span>
+        </button>
+      </li>
+      <li class="nav-item flex-grow-1">
+        <h3>{game.name}</h3>
+      </li>
+      <li class="nav-item" hx-get="{uri:BoardController.leaderboard(game.boardId)}" hx-push-url="true" hx-target="#content">
+        <button class="nav-link">
+        <i class="bi bi-trophy"></i>
+        <span class="d-none d-lg-block">Leaderboard</span>
+        </button>
+      </li>
+    </ul>
 </div>
 {#else}
   <div class="alert alert-warning" role="alert">

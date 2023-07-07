@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import io.quarkiverse.renarde.security.RenardeUser;
@@ -24,15 +25,21 @@ public class User extends PanacheEntity implements RenardeUser {
 	public String tenantId;
 	public String authId;
 
+	public boolean isAdmin;
+
 	@Override
 	public boolean registered(){
 	    return true;
 	}
 
-    @Override
-    public Set<String> roles() {
-        return Collections.emptySet();
-    }
+	@Override
+	public Set<String> roles() {
+		Set<String> roles = new HashSet<>();
+		if(isAdmin) {
+			roles.add("admin");
+		}
+		return roles;
+	}
 
     @Override
     public String userId() {

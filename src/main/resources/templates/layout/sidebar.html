@@ -1,28 +1,41 @@
-{#user inject:user img=true size=20/}
+<div class="offcanvas-header d-flex justify-content-between">
+  <a href="/" class=" d-flex align-items-center  me-md-auto text-white text-decoration-none">
+    <img class="bi me-2" width="40" height="32" src="/images/logo.svg"/>
+    <span class="fs-4">Blast</span>
+  </a>
+  <button type="button" class="btn-close btn-close-white d-lg-none" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#sidebar"></button>
+</div>
+<hr>
 {#if inject:user}
-<h3>Games</h3>
-{#include GameController/gamePicker.html /}
-{/if}
-<ul class="nav nav-pills flex-column mb-auto">
-  {#if !inject:user}
-  Login with:
-  {#oidcItem name="github" title="GitHub"/}
-  {#oidcItem name="google" title="Google"/}
-  {#if DEV_MODE}
-  {#form uri:UserController.loginDev}
-  <button class="nav-link">
-  <i class="bi bi-person-gear"></i>
-  Dev User
-  </button>
-  {/form}
+  {#if inject:user.isAdmin}
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item" hx-push-url="true" hx-get="{uri:BoardController.create}"  hx-target="#content" data-bs-dismiss="offcanvas" data-bs-target="#sidebar">
+        <button class="nav-link">
+        <i class="bi bi-plus-square-dotted"></i>
+        Create new board
+        </button>
+      </li>
+    </ul>
+    <hr>
   {/if}
-  {#else}
+  <h3>Games</h3>
+  {#include GameController/gamePicker.html /}
   <hr>
-  <li class="nav-item" hx-push-url="true" hx-get="{uri:BoardController.create}" hx-target="#content">
-    <button class="nav-link">
-    <i class="bi bi-plus-square-dotted"></i>
-    Create new board
-    </button>
-  </li>
-  {/if}
-</ul>
+  {#user inject:user img=true size=32/}
+{#else}
+  <div class="mb-2">Login with:</div>
+  <ul class="nav nav-pills flex-column mb-auto">
+      {#oidcItem name="github" title="GitHub"/}
+      {#oidcItem name="google" title="Google"/}
+      {#if DEV_MODE}
+        <li class="nav-item">
+          {#form uri:UserController.loginDev}
+            <button class="nav-link">
+            <i class="bi bi-person-gear"></i>
+            Dev User
+            </button>
+          {/form}
+        </li>
+      {/if}
+  </ul>
+{/if}

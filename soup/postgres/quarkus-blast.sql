@@ -3,11 +3,12 @@
 
     create sequence GameEntity_SEQ start with 1 increment by 50;
 
+    create sequence ScoreEntity_SEQ start with 1 increment by 50;
+
     create sequence user_table_SEQ start with 1 increment by 50;
 
     create table BoardEntity (
         id bigint not null,
-        bestScores jsonb,
         cells jsonb,
         columns integer not null,
         name varchar(255),
@@ -29,11 +30,21 @@
         primary key (id)
     );
 
+    create table ScoreEntity (
+        id bigint not null,
+        created timestamp(6),
+        score integer not null,
+        board_id bigint,
+        user_id bigint,
+        primary key (id)
+    );
+
     create table user_table (
         id bigint not null,
         authId varchar(255),
         email varchar(255) not null,
         firstName varchar(255),
+        isAdmin boolean not null,
         lastName varchar(255),
         tenantId varchar(255),
         userName varchar(255),
@@ -48,5 +59,15 @@
 
     alter table if exists GameEntity
        add constraint FK7vxg81wavjt76bx5b1lrsfjmw
+       foreign key (user_id)
+       references user_table;
+
+    alter table if exists ScoreEntity
+       add constraint FKanq04ctj0y1cmxfahmpqvtkni
+       foreign key (board_id)
+       references BoardEntity;
+
+    alter table if exists ScoreEntity
+       add constraint FK6sf5tvq95otis7sebcm939eco
        foreign key (user_id)
        references user_table;

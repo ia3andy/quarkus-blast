@@ -16,6 +16,8 @@ import me.atrox.haikunator.Haikunator;
 import model.User;
 import rest.GameController;
 
+import java.util.Set;
+
 @ApplicationScoped
 public class MySecuritySetup implements RenardeUserProvider, RenardeOidcHandler {
 
@@ -27,6 +29,9 @@ public class MySecuritySetup implements RenardeUserProvider, RenardeOidcHandler 
 
     @Inject
     Flash flash;
+
+    @Inject
+    BlastConfig config;
 
     @Override
     public RenardeUser findUser(String tenantId, String id) {
@@ -46,6 +51,10 @@ public class MySecuritySetup implements RenardeUserProvider, RenardeOidcHandler 
             user = new User();
             user.tenantId = tenantId;
             user.authId = authId;
+
+            if(config.admins().orElse(Set.of()).contains(tenantId + ":" + authId)) {
+                user.isAdmin = true;
+            }
 
             user.email = oidcSecurity.getOidcEmail();
             user.firstName = oidcSecurity.getOidcFirstName();

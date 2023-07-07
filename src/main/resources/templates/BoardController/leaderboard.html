@@ -1,0 +1,25 @@
+{#include layout/page.html}
+{#fragment id=content}
+  <div class="container overflow-auto leaderboard">
+    <h1><i class="bi me-3 bi-trophy"></i>{boardName}</h1>
+    <div class="mt-5">
+
+      {#for item in leaderboard}
+        <div class="score-item">
+            <div class="rank text-start">
+              {item.rank}
+            </div>
+            <div class="text-start avatar">
+              {#gravatar item.userEmail size=50 default='mm' class="rounded-circle me-2"/}
+            </div>
+            <div class="text-start username flex-grow-1">
+              {item.userName}
+            </div>
+            <div class="score text-end">
+              {item.score} <span class="unit">points</span>
+            </div>
+          </div>
+      {/for}
+    </div>
+  </div>
+{/fragment}

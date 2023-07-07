@@ -22,9 +22,6 @@ public class BoardEntity extends PanacheEntity {
     public int columns;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    public Map<String, Integer> bestScores = new HashMap<>();
-
-    @JdbcTypeCode(SqlTypes.JSON)
     public List<StoredCell> cells;
 
     public static BoardEntity fromCells(String name, List<Cell> cells, int rows, int columns) {

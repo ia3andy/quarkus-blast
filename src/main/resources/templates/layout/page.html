@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Quarkus Blast</title>
+    <link rel="icon" href="/images/logo.svg" type="image/svg+xml">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {#bundleStyle /}
+    {#bundleScript /}
+    <script>
+      window.onload = function() {
+          const paramName = "{inject:csrf.parameterName}";
+          const token = "{inject:csrf.token}";
+          document.body.addEventListener('htmx:configRequest', (event) => {
+              if(event.detail.verb !== "get") {
+                  event.detail.parameters[paramName] = token;
+              }
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <main hx-ext="morph">
+      <div id="sidebar" class="sidebar offcanvas-lg offcanvas-start navbar-expand-md d-flex flex-column p-3 text-white bg-dark">
+        {#include layout/sidebar.html /}
+      </div>
+      <div id="content" class="d-flex flex-column flex-grow-1 p-3 bg-light">
+        <div class="navbar navbar-expand-lg">
+          <div class="container-fluid">
+            <button type="button" id="sidebar-button" class="sidebar-toggler navbar-toggler d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
+              <i class="bi bi-list"></i>
+            </button>
+          </div>
+        </div>
+        {#if !inject:user}
+          <div class="container text-center game-container">
+            <h1>Welcome to Quarkus Blast</h1>
+            Please login (on the left menu) before you can do anything.
+          </div>
+        {#else}
+          {#insert /}
+        {/if}
+      </div>
+    </main>
+  </body>
+</html>

@@ -8,6 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.transaction.Transactional;
 import model.BoardEntity;
+import model.ScoreEntity;
 import model.User;
 
 import java.io.IOException;
@@ -36,7 +37,9 @@ public class Startup {
             user.tenantId = "manual";
             user.authId = "dev";
             user.userName = "dev";
+            user.isAdmin = true;
             user.persist();
+
         }
 
     }

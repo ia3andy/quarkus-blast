@@ -27,9 +27,6 @@ h1 {
   text-align: center;
 }
 
-#content {
-  overflow-y: auto;
-}
 
-@import "nav";
+@import "sidebar";
 @import "blast";

@@ -1,44 +1,84 @@
+.leaderboard {
+
+  .score-item {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    position: relative;
+    margin-bottom: 20px;
+    border-radius: 100px;
+    min-width: 100px;
+    font-size: 24px;
+    text-align: center;
+    color: #555555; /* Dark Gray */
+    background-color: #EAA786;
+    margin-left: 50px;
+    box-shadow: 0 0 4rem 0 rgba(0, 0, 0, 0.1), 0 1rem 2rem -1rem rgba(0, 0, 0, 0.3);
+  }
+  .rank {
+    font-size: 30px;
+    font-weight: bold;
+    left: -50px;
+    position: absolute;
+  }
+  .avatar {
+    height: 30px;
+    img {
+      margin-left: -20px;
+      margin-top: -10px;
+    }
+  }
+  .username {
+    color: white;
+  }
+  .score {
+    border: none;
+    padding: 0;
+    margin-right: 20px;
+  }
+}
 
 .cell, .quark-type {
   padding: 75px 5px 5px;
   margin: 5px;
   height: 100px;
+  width: 100px;
   cursor: pointer;
   text-align: center;
   background-repeat: no-repeat;
   background-position-x: center;
-  background-size: 70px;
+  background-size: 60px;
   background-position-y: top;
   font-weight: bold;
   border-radius: 10px;
 
   &.up {
-    background-image: url("../images/up.svg");
+    background-image: url("../quarks/up.svg");
   }
 
   &.down {
-    background-image: url("../images/down.svg");
+    background-image: url("../quarks/down.svg");
   }
 
   &.charm {
-    background-image: url("../images/charm.svg");
+    background-image: url("../quarks/charm.svg");
   }
 
   &.strange {
-    background-image: url("../images/strange.svg");
+    background-image: url("../quarks/strange.svg");
   }
 
   &.top {
-    background-image: url("../images/top.svg");
+    background-image: url("../quarks/top.svg");
   }
 
   &.bottom {
-    background-image: url("../images/bottom.svg");
+    background-image: url("../quarks/bottom.svg");
   }
 
   &.blasted, &.dragged {
     cursor: auto;
-    background-image: url("../images/blasted.svg") !important;
+    background-image: url("../quarks/blasted.svg") !important;
   }
 
   &.blasted {
@@ -78,10 +118,27 @@
 
 .game-container {
   max-width: 700px;
+
+  .score {
+    border: 3px solid #FFDAB9; /* Pastel Peach Puff */
+    padding: 10px;
+    border-radius: 100px;
+    min-width: 100px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    color: #555555; /* Dark Gray */
+    background-color: white;
+    z-index: 1;
+  }
+}
+
+.score .unit {
+  color: #777777
 }
 
 .blast-score {
-  background-image: url("../images/blasted.svg");
+  background-image: url("../quarks/blasted.svg");
   height: 50px;
   width: 45px;
   background-size: 40px;
@@ -104,18 +161,7 @@
   border-bottom: 3px solid #FFDAB9;
 }
 
-.score {
-  border: 3px solid #FFDAB9; /* Pastel Peach Puff */
-  padding: 10px;
-  border-radius: 100px;
-  min-width: 100px;
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-  color: #555555; /* Dark Gray */
-  background-color: white;
-  z-index: 1;
-}
+
 
 .quark-picker {
   margin-top: 20px;

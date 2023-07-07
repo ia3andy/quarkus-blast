@@ -19,11 +19,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.UriBuilder;
 import model.BoardEntity;
 import model.GameEntity;
+import model.ScoreEntity;
 import model.User;
-import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.RestPath;
 
 import java.sql.Timestamp;
@@ -110,18 +109,14 @@ public class GameController extends HxController {
         game(gameToPlay.id);
     }
 
-
-
     @Authenticated
     @POST
     @Path("/game/play")
-    public void play(@NotNull @RestPath Long id, @NotNull @RestPath int row, @NotNull @RestPath int column,
-            @NotNull @RestForm("type")
-            QuarkType type) {
+    public void play(@NotNull @RestPath Long id, @NotNull @RestPath int row, @NotNull @RestPath int column) {
         onlyHxRequest();
         final GameEntity game = GameEntity.findById(id);
         notFoundIfNull(game);
-        final Game played = Game.play(game.toGame(), row, column, type);
+        final Game played = Game.play(game.toGame(), row, column);
         game.setGame(played);
         if (played.isCompleted()) {
             game.completed = Timestamp.from(Instant.now());
@@ -144,15 +139,19 @@ public class GameController extends HxController {
 
     @Authenticated
     @POST
+    @Transactional
     @Path("/game/score/save")
-    public void saveScore(@NotNull @RestPath Long id, @RestForm String nickname) {
+    public Response saveScore(@NotNull @RestPath Long id) {
         onlyHxRequest();
         final GameEntity game = GameEntity.findById(id);
-        notFoundIfNull(game);
         final BoardEntity board = BoardEntity.findById(game.id);
         notFoundIfNull(board);
-        board.bestScores.put(nickname, game.score);
-        board.persist();
+        final ScoreEntity score = new ScoreEntity();
+        score.board = board;
+        score.user = getUser();
+        score.score = game.score;
+        score.persist();
+        return seeOther(Router.getURI(BoardController::leaderboard, board.id));
     }
 
     public record GameData(Long id, Long boardId, String name, List<List<Cell>> grid, int score, Date completed) {

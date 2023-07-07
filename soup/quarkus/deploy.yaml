@@ -26,6 +26,36 @@ spec:
                 secretKeyRef:
                   name: postgres-secrets
                   key: user
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: oidc-secrets
+                  key: google-client-id
+                  optional: true
+            - name: GOOGLE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: oidc-secrets
+                  key: google-secret
+                  optional: true
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: oidc-secrets
+                  key: github-client-id
+                  optional: true
+            - name: GITHUB_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: oidc-secrets
+                  key: github-secret
+                  optional: true
+            - name: BLAST_ADMINS
+              valueFrom:
+                secretKeyRef:
+                  name: oidc-secrets
+                  key: admins
+                  optional: true
           ports:
             - name: http
               containerPort: 8081

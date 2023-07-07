@@ -9,6 +9,7 @@ import io.quarkus.qute.TemplateInstance;
 import io.quarkus.runtime.util.StringUtil;
 import io.quarkus.security.Authenticated;
 import io.smallrye.common.annotation.Blocking;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -16,8 +17,11 @@ import jakarta.ws.rs.core.Response;
 import me.atrox.haikunator.Haikunator;
 import model.BoardEntity;
 import model.GameEntity;
+import model.ScoreEntity;
 import org.jboss.resteasy.reactive.RestForm;
+import org.jboss.resteasy.reactive.RestPath;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static game.GameGenerator.DEFAULT_COLUMNS;
@@ -34,23 +38,42 @@ public class BoardController extends HxController {
     @CheckedTemplate
     public static class Templates {
 
-        public static native TemplateInstance create(GameController.GameData game, List<BoardEntity> boards,
+        public static native TemplateInstance create(List<BoardEntity> boards,
                 CreateBoardData board);
 
         public static native TemplateInstance create$content(CreateBoardData board);
+
+        public static native TemplateInstance leaderboard(List<BoardEntity> boards, String boardName,
+                List<ScoreData> leaderboard);
+
+        public static native TemplateInstance leaderboard$content(String boardName, List<ScoreData> leaderboard);
     }
 
     @Authenticated
+    @Path("{id}/leaderboard")
+    public TemplateInstance leaderboard(@RestPath Long id) {
+        final BoardEntity board = BoardEntity.findById(id);
+        final List<ScoreEntity> scores = ScoreEntity.boardScores(board);
+        final List<ScoreData> scoreData = new ArrayList<>();
+        for (int i = 0; i < scores.size(); i++) {
+            final ScoreEntity score = scores.get(i);
+            scoreData.add(new ScoreData(i + 1, score.user.userName, score.user.email, score.score));
+        }
+        return isHxRequest() ? Templates.leaderboard$content(board.name, scoreData) :
+                Templates.leaderboard(BoardEntity.listAll(), board.name, scoreData);
+    }
+
+    @RolesAllowed("admin")
     public TemplateInstance create() {
         final List<BoardEntity> boards = BoardEntity.listAll();
         String generatedName = new Haikunator().setTokenLength(0).haikunate();
         final CreateBoardData board = new CreateBoardData(generatedName, DEFAULT_ROWS,
                 DEFAULT_COLUMNS, DEFAULT_MIN_CHARGE, DEFAULT_MAX_CHARGE);
         return isHxRequest() ? Templates.create$content(board) :
-                Templates.create(null, boards, board);
+                Templates.create(boards, board);
     }
 
-    @Authenticated
+    @RolesAllowed("admin")
     @POST
     public Response save(@RestForm String name, @RestForm @Positive int rows, @RestForm @Positive int columns,
             @RestForm @Positive int minCharge, @RestForm @Positive int maxCharge) {
@@ -68,4 +91,6 @@ public class BoardController extends HxController {
                                   int defaultColumns, int defaultMinCharge, int defaultMaxCharge) {
     }
 
+
+    public record ScoreData(int rank, String userName, String userEmail, int score) {}
 }

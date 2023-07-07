@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,9 +44,12 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
     public boolean isCompleted() {
         return cells.stream().allMatch(Cell::blasted);
     }
+
     public Game blast(Set<Cell> reaction, Set<Cell> lonely) {
         List<Cell> newCells = cells.stream()
-                .map(c -> reaction.contains(c) || lonely.contains(c) ? new Cell(c.row(), c.column(), c.type(), c.charge(), true) : c)
+                .map(c -> reaction.contains(c) || lonely.contains(c) ?
+                        new Cell(c.row(), c.column(), c.type(), c.charge(), true) :
+                        c)
                 .collect(Collectors.toList());
         return new Game(newCells, rows(), columns(), score() + computePoints(reaction, lonely));
     }
@@ -67,7 +71,6 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
         QuarkType targetType = targetCell.type();
 
         Set<Cell> group = new HashSet<>();
-        group.add(targetCell);
 
         // Stack for iterative traversal
         Deque<Cell> stack = new ArrayDeque<>();
@@ -85,7 +88,7 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
                     Cell neighbor = cell(newRow, newColumn);
 
                     // Check if the neighbor has the same type as the target cell
-                    if (neighbor.type() == targetType && !group.contains(neighbor)) {
+                    if (!neighbor.blasted() && neighbor.type() == targetType && !group.contains(neighbor)) {
                         group.add(neighbor);
                         stack.push(neighbor);
                     }
@@ -96,26 +99,60 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
         return group;
     }
 
-    public Game changeCellType(Cell selectedCell, QuarkType newType) {
+    public Game cleanCharge() {
         final List<Cell> newCells = cells.stream().map(c -> {
-            if (selectedCell.equals(c))
-                return new Cell(c.row(), c.column(), newType, c.charge(), c.blasted());
-            else if (c.blasted())
-                return new Cell(selectedCell.row(), selectedCell.column(), c.type(), 0, true);
+            if (c.blasted())
+                return new Cell(c.row(), c.column(), c.type(), 0, true);
             return c;
         }).collect(Collectors.toList());
         return new Game(newCells, rows(), columns(), score());
     }
 
-    public static Game play(Game game, int row, int column, QuarkType type) {
-        Cell selectedCell = game.cell(row, column);
+    public Game swapCells(Cell cell1, Cell cell2) {
+        final List<Cell> newCells = cells.stream().map(c -> {
+            if (cell1.equals(c))
+                return new Cell(c.row(), c.column(), cell2.type(), cell2.charge(), cell2.blasted());
+            else if (cell2.equals(c))
+                return new Cell(c.row(), c.column(), cell1.type(), cell1.charge(), cell1.blasted());
+            else if (c.blasted())
+                return new Cell(c.row(), c.column(), c.type(), 0, true);
+            return c;
+        }).collect(Collectors.toList());
+        return new Game(newCells, rows(), columns(), score());
+    }
+
+    public static Game play(Game game, int row, int column) {
+        Game cleaned = game.cleanCharge();
+        Cell selectedCell = cleaned.cell(row, column);
         if (selectedCell == null) {
             throw new IllegalStateException("Invalid selected cell: " + row + ":" + column);
         }
-        final Game updated = game.changeCellType(selectedCell, type);
-        final Set<Cell> reaction = updated.detectReactionGroup(row, column);
+        final Optional<Cell> swap = cleaned.findCellToSwap(selectedCell);
+        if(swap.isEmpty()) {
+            return cleaned.blast(Set.of(selectedCell), Set.of());
+        }
+        final Game updated = cleaned.swapCells(selectedCell, swap.get());
+        final Set<Cell> reaction = new HashSet<>();
+        reaction.addAll(updated.detectReactionGroup(row, column));
+        reaction.addAll(updated.detectReactionGroup(swap.get().row(), swap.get().column()));
         final Set<Cell> lonely = updated.detectLonely();
         return updated.blast(reaction, lonely);
+    }
+
+    private Optional<Cell> findCellToSwap(final Cell selectedCell) {
+        Optional<Cell> current = Optional.empty();
+        for (int[] direction : DIRECTIONS) {
+            int newRow = selectedCell.row() + direction[0];
+            int newColumn = selectedCell.column() + direction[1];
+            Cell neighbor = cell(newRow, newColumn);
+            if (neighbor != null
+                    && !neighbor.blasted()
+                    && neighbor.charge() < selectedCell.charge()
+                    && (current.isEmpty() || neighbor.charge() < current.get().charge())) {
+                current = Optional.of(neighbor);
+            }
+        }
+        return current;
     }
 
     private Set<Cell> detectLonely() {
