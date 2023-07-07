@@ -6,6 +6,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
+import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import model.BoardEntity;
 import model.ScoreEntity;
@@ -17,12 +18,16 @@ import java.nio.charset.StandardCharsets;
 
 @ApplicationScoped
 public class Startup {
+
+    @Inject
+    BlastConfig config;
+
     /**
      * This method is executed at the start of your application
      */
     @Transactional
     public void start(@Observes StartupEvent evt) throws IOException {
-        if (LaunchMode.current() == LaunchMode.DEVELOPMENT) {
+        if (config.testUser()) {
             User user = new User();
             user.email = "nobody@example.com";
             user.firstName = "dev";

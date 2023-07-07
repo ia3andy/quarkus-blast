@@ -20,6 +20,7 @@ public class UserController extends HxController {
     @Path("login/dev")
     public Response loginDev() {
         model.User user = model.User.findByAuthId("manual", "dev");
+        notFoundIfNull(user);
         return Response.seeOther(Router.getURI(GameController::index)).cookie(security.makeUserCookie(user)).build();
     }
 
