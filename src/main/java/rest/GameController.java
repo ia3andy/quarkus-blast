@@ -45,7 +45,6 @@ public class GameController extends HxController {
                 .collect(Collectors.toList());
 
         public static final boolean TEST_USER = ConfigProvider.getConfig().getValue("blast.test-user", Boolean.class);
-        ;
 
         public static final boolean OIDC_GOOGLE = ConfigProvider.getConfig()
                 .getOptionalValue("quarkus.oidc.google.provider", String.class).isPresent();

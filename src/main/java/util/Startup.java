@@ -28,6 +28,13 @@ public class Startup {
     @Transactional
     public void start(@Observes StartupEvent evt) throws IOException {
         if (config.testUser()) {
+            final InputStream boards = Startup.class.getResourceAsStream("/boards.json");
+            final String boardsJson = new String(boards.readAllBytes(), StandardCharsets.UTF_8);
+            final JsonArray boardsList = new JsonArray(boardsJson);
+            for (int i = 0; i < boardsList.size(); i++) {
+                final BoardEntity boardEntity = boardsList.getJsonObject(i).mapTo(BoardEntity.class);
+                boardEntity.persist();
+            }
             User user = new User();
             user.email = "nobody@example.com";
             user.firstName = "dev";
@@ -37,13 +44,6 @@ public class Startup {
             user.userName = "dev";
             user.isAdmin = true;
             user.persist();
-            final InputStream boards = Startup.class.getResourceAsStream("/boards.json");
-            final String boardsJson = new String(boards.readAllBytes(), StandardCharsets.UTF_8);
-            final JsonArray boardsList = new JsonArray(boardsJson);
-            for (int i = 0; i < boardsList.size(); i++) {
-                final BoardEntity boardEntity = boardsList.getJsonObject(i).mapTo(BoardEntity.class);
-                boardEntity.persist();
-            }
         }
 
     }

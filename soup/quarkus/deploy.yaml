@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: blast-quarkus
-          image: quay.io/redhat-user-workloads/rh-quarkus-tenant/quarkus-blast/blast-quarkus:build-2d63d-1688726659
+          image: quay.io/redhat-user-workloads/rh-quarkus-tenant/quarkus-blast/blast-quarkus:build-cf99e-1688736541
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:
@@ -26,6 +26,12 @@ spec:
                 secretKeyRef:
                   name: postgres-secrets
                   key: user
+            - name: GOOGLE_PROVIDER
+              valueFrom:
+                secretKeyRef:
+                  name: oidc-secrets
+                  key: google-provider
+                  optional: true
             - name: GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -37,6 +43,12 @@ spec:
                 secretKeyRef:
                   name: oidc-secrets
                   key: google-secret
+                  optional: true
+            - name: GITHUB_PROVIDER
+              valueFrom:
+                secretKeyRef:
+                  name: oidc-secrets
+                  key: github-provider
                   optional: true
             - name: GITHUB_CLIENT_ID
               valueFrom:
