@@ -44,7 +44,7 @@ public class GameController extends HxController {
         public static final List<String> QUARK_TYPES = QuarkType.TYPES.stream().map(Enum::toString)
                 .collect(Collectors.toList());
 
-        public static final boolean TEST_USER = ConfigProvider.getConfig().getValue("blast.test-user", Boolean.class);
+        public static final boolean DEV_USER = ConfigProvider.getConfig().getValue("blast.dev-user", Boolean.class);
 
         public static final boolean OIDC_GOOGLE = ConfigProvider.getConfig()
                 .getOptionalValue("quarkus.oidc.google.provider", String.class).isPresent();

@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   name: blast-quarkus
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: quarkus-blast-app

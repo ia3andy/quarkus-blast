@@ -27,7 +27,7 @@
   <ul class="nav nav-pills flex-column mb-auto">
       {#if OIDC_GITHUB}{#oidcItem name="github" title="GitHub"/}{/if}
       {#if OIDC_GOOGLE}{#oidcItem name="google" title="Google"/}{/if}
-      {#if TEST_USER}
+      {#if DEV_USER}
         <li class="nav-item">
           {#form uri:UserController.loginDev}
             <button class="nav-link">

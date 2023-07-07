@@ -10,7 +10,7 @@ import java.util.Set;
 public interface BlastConfig {
 
     @WithDefault("false")
-    boolean testUser();
+    boolean devUser();
     Optional<Set<String>> admins();
 
 }

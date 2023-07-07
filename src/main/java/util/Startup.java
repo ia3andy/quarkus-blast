@@ -1,15 +1,12 @@
 package util;
 
-import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import model.BoardEntity;
-import model.ScoreEntity;
 import model.User;
 
 import java.io.IOException;
@@ -27,7 +24,7 @@ public class Startup {
      */
     @Transactional
     public void start(@Observes StartupEvent evt) throws IOException {
-        if (config.testUser()) {
+        if (config.devUser() && User.findByAuthId("manual", "dev") == null) {
             final InputStream boards = Startup.class.getResourceAsStream("/boards.json");
             final String boardsJson = new String(boards.readAllBytes(), StandardCharsets.UTF_8);
             final JsonArray boardsList = new JsonArray(boardsJson);
