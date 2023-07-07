@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: blast-quarkus
-          image: quay.io/redhat-user-workloads/rh-quarkus-tenant/quarkus-blast/blast-quarkus:build-cf99e-1688736541
+          image: quay.io/redhat-user-workloads/rh-quarkus-tenant/quarkus-blast/blast-quarkus:build-2d70c-1688742938
           env:
             - name: POSTGRES_PASSWORD
               valueFrom:

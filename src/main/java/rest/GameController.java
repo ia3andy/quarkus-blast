@@ -81,12 +81,13 @@ public class GameController extends HxController {
         User user = getUser();
         if (user != null) {
             final List<BoardEntity> boards = BoardEntity.listAll();
-            final BoardEntity board = boards.get(0);
-            final GameEntity game = findOrCreateBoardGame(user, board);
-            return Templates.game(new GameData(game), boards);
-        } else {
-            return Templates.game(null, null);
+            if(!boards.isEmpty()) {
+                final BoardEntity board = boards.get(0);
+                final GameEntity game = findOrCreateBoardGame(user, board);
+                return Templates.game(new GameData(game), boards);
+            }
         }
+        return Templates.game(null, null);
     }
 
     @Authenticated

@@ -4,15 +4,18 @@ import game.Cell;
 import game.GameGenerator;
 import io.quarkiverse.renarde.htmx.HxController;
 import io.quarkiverse.renarde.router.Router;
+import io.quarkiverse.renarde.security.RenardeSecurity;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.runtime.util.StringUtil;
 import io.quarkus.security.Authenticated;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.inject.Inject;
 import jakarta.validation.constraints.Positive;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import me.atrox.haikunator.Haikunator;
 import model.BoardEntity;
@@ -34,6 +37,8 @@ import static game.GameGenerator.DEFAULT_ROWS;
 public class BoardController extends HxController {
     GameGenerator gameGenerator = new GameGenerator();
 
+    @Inject
+    RenardeSecurity security;
     
     @CheckedTemplate
     public static class Templates {
@@ -63,8 +68,11 @@ public class BoardController extends HxController {
                 Templates.leaderboard(BoardEntity.listAll(), board.name, scoreData);
     }
 
-    @RolesAllowed("admin")
+    @Authenticated
     public TemplateInstance create() {
+        if(!security.getUser().roles().contains("admin")) {
+            throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).build());
+        }
         final List<BoardEntity> boards = BoardEntity.listAll();
         String generatedName = new Haikunator().setTokenLength(0).haikunate();
         final CreateBoardData board = new CreateBoardData(generatedName, DEFAULT_ROWS,
@@ -73,11 +81,14 @@ public class BoardController extends HxController {
                 Templates.create(boards, board);
     }
 
-    @RolesAllowed("admin")
+    @Authenticated
     @POST
     public Response save(@RestForm String name, @RestForm @Positive int rows, @RestForm @Positive int columns,
             @RestForm @Positive int minCharge, @RestForm @Positive int maxCharge) {
         onlyHxRequest();
+        if(!security.getUser().roles().contains("admin")) {
+            throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).build());
+        }
         GameEntity.deleteAll();
         final List<Cell> cells = gameGenerator.generateCells(rows, columns, minCharge, maxCharge);
         String boardName = StringUtil.isNullOrEmpty(name) ? new Haikunator().setTokenLength(0).haikunate() : name;
