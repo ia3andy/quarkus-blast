@@ -16,8 +16,6 @@ spec:
         - name: blast-quarkus
           image: quay.io/redhat-user-workloads/rh-quarkus-tenant/quarkus-blast/blast-quarkus:build-2d63d-1688726659
           env:
-            - name: QUARKUS_PROFILE
-              value: soup
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
