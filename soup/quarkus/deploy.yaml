@@ -3,7 +3,7 @@ apiVersion: apps/v1
 metadata:
   name: blast-quarkus
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: quarkus-blast-app
@@ -14,8 +14,10 @@ spec:
     spec:
       containers:
         - name: blast-quarkus
-          image: blast-quarkus:latest
+          image: quay.io/redhat-user-workloads/rh-quarkus-tenant/quarkus-blast/blast-quarkus:build-2d63d-1688726659
           env:
+            - name: QUARKUS_PROFILE
+              value: soup
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -70,10 +72,10 @@ apiVersion: v1
 metadata:
   name: blast-quarkus
 spec:
-ports:
-  - name: http-8081
-    port: 8081
-    protocol: TCP
-    targetPort: 8081
-selector:
-  app: quarkus-blast-app
+  ports:
+    - name: http-8081
+      port: 8081
+      protocol: TCP
+      targetPort: 8081
+  selector:
+    app: quarkus-blast-app
