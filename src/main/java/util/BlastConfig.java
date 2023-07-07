@@ -12,4 +12,5 @@ public interface BlastConfig {
     @WithDefault("false")
     boolean testUser();
     Optional<Set<String>> admins();
+
 }

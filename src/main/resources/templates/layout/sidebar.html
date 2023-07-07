@@ -25,9 +25,9 @@
 {#else}
   <div class="mb-2">Login with:</div>
   <ul class="nav nav-pills flex-column mb-auto">
-      {#oidcItem name="github" title="GitHub"/}
-      {#oidcItem name="google" title="Google"/}
-      {#if DEV_MODE}
+      {#if OIDC_GITHUB}{#oidcItem name="github" title="GitHub"/}{/if}
+      {#if OIDC_GOOGLE}{#oidcItem name="google" title="Google"/}{/if}
+      {#if TEST_USER}
         <li class="nav-item">
           {#form uri:UserController.loginDev}
             <button class="nav-link">

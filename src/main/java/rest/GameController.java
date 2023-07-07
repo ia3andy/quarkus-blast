@@ -10,7 +10,6 @@ import io.quarkiverse.renarde.security.RenardeSecurity;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateGlobal;
 import io.quarkus.qute.TemplateInstance;
-import io.quarkus.runtime.LaunchMode;
 import io.quarkus.security.Authenticated;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.inject.Inject;
@@ -23,6 +22,7 @@ import model.BoardEntity;
 import model.GameEntity;
 import model.ScoreEntity;
 import model.User;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.jboss.resteasy.reactive.RestPath;
 
 import java.sql.Timestamp;
@@ -41,11 +41,18 @@ public class GameController extends HxController {
 
     @TemplateGlobal
     public static class Globals {
-        public static final List<String> QUARK_TYPES = QuarkType.TYPES.stream().map(Enum::toString).collect(Collectors.toList());
+        public static final List<String> QUARK_TYPES = QuarkType.TYPES.stream().map(Enum::toString)
+                .collect(Collectors.toList());
 
-        public static final boolean DEV_MODE = LaunchMode.current() == LaunchMode.DEVELOPMENT;
+        public static final boolean TEST_USER = ConfigProvider.getConfig().getValue("blast.test-user", Boolean.class);
+        ;
 
-        public static List<String> quarkTypes(){
+        public static final boolean OIDC_GOOGLE = ConfigProvider.getConfig()
+                .getOptionalValue("quarkus.oidc.google.provider", String.class).isPresent();
+        public static final boolean OIDC_GITHUB = ConfigProvider.getConfig()
+                .getOptionalValue("quarkus.oidc.github.provider", String.class).isPresent();
+
+        public static List<String> quarkTypes() {
             return QUARK_TYPES;
         }
     }
@@ -69,12 +76,11 @@ public class GameController extends HxController {
         return (User) security.getUser();
     }
 
-
     @Path("/")
     @Transactional
     public TemplateInstance index() {
         User user = getUser();
-        if(user != null) {
+        if (user != null) {
             final List<BoardEntity> boards = BoardEntity.listAll();
             final BoardEntity board = boards.get(0);
             final GameEntity game = findOrCreateBoardGame(user, board);
@@ -135,7 +141,6 @@ public class GameController extends HxController {
         existingGame.delete();
         return seeOther(Router.getURI(GameController::startGameFromBoard, board.id));
     }
-
 
     @Authenticated
     @POST
