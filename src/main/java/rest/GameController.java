@@ -63,6 +63,9 @@ public class GameController extends HxController {
     @CheckedTemplate
     public static class Templates {
 
+        public static native TemplateInstance guide(List<BoardEntity> boards);
+        public static native TemplateInstance guide$content();
+
         public static native TemplateInstance game(GameData game, List<BoardEntity> boards);
 
         public static native TemplateInstance gamePicker(GameData game, List<BoardEntity> boards);
@@ -78,18 +81,29 @@ public class GameController extends HxController {
     }
 
     @Path("/")
-    @Transactional
     public TemplateInstance index() {
         User user = getUser();
         if (user != null) {
-            final List<BoardEntity> boards = BoardEntity.listAll();
-            if(!boards.isEmpty()) {
-                final BoardEntity board = boards.get(0);
-                final GameEntity game = findOrCreateBoardGame(user, board);
-                return Templates.game(new GameData(game, null), boards);
-            }
+            return guide();
         }
         return Templates.game(null, null);
+    }
+
+    public TemplateInstance guide() {
+        return isHxRequest() ? Templates.guide$content() : Templates.guide(BoardEntity.listAll());
+    }
+
+    @Authenticated
+    @Transactional
+    @Path("/game/start")
+    public TemplateInstance start() {
+        final List<BoardEntity> boards = BoardEntity.listAll();
+        if(!boards.isEmpty()) {
+            final BoardEntity board = boards.get(0);
+            final GameEntity game = findOrCreateBoardGame(getUser(), board);
+            game(game.id);
+        }
+        return game(null);
     }
 
     @Authenticated

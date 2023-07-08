@@ -2,7 +2,17 @@
 {#fragment id=content}
   <div class="container overflow-auto leaderboard">
     <h1>Guide</h1>
-    <div class="mt-5 ">
+    <div class="mt-5 alert alert-info">
+      <p>Quarkus Blast is a game to find how far we can go with Quarkus server side rendering (Renarde and Qute) and htmx.</p>
+      <ul>
+        <li>You have 6 Quarks types (up, down, charm, stange, top, bottom) placed on a grid with different charges.</li>
+        <li>Tap on a Quark to selected it, then tap on another to swap them.</li>
+        <li>Tap on the same Quark to blast it</li>
+        <li>When the same Quarks are next to each other, a blast reaction is triggered and generate the total charge time the number of Quarks of the reaction points</li>
+        <li>Two reactions can happen at the same time, it's a combo</li>
+      </ul>
+      <p><b>Go blast it all!</b></p>
+      <button type="button" class="btn btn-primary" hx-push-url="true" hx-get="{uri:GameController.start}" hx-target="#content">Start</button>
     </div>
   </div>
 {/fragment}

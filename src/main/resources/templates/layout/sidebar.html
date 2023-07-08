@@ -10,7 +10,7 @@
   {#if inject:user.isAdmin}
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item" hx-push-url="true" hx-get="{uri:BoardController.create}"  hx-target="#content" data-bs-dismiss="offcanvas" data-bs-target="#sidebar">
-        <button class="nav-link">
+        <button class="nav-link text-nowrap">
         <i class="bi bi-plus-square-dotted"></i>
         Create new board
         </button>
