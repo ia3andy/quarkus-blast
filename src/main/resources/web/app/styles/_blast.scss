@@ -1,4 +1,5 @@
 .leaderboard {
+  min-height: 1vw;
 
   .score-item {
     display: flex;
@@ -12,14 +13,16 @@
     text-align: center;
     color: #555555; /* Dark Gray */
     background-color: #EAA786;
-    margin-left: 50px;
+    margin-left: 75px;
     box-shadow: 0 0 4rem 0 rgba(0, 0, 0, 0.1), 0 1rem 2rem -1rem rgba(0, 0, 0, 0.3);
   }
   .rank {
     font-size: 30px;
     font-weight: bold;
-    left: -50px;
+    left: -75px;
     position: absolute;
+    text-align: right;
+    width: 50px;
   }
   .avatar {
     height: 30px;

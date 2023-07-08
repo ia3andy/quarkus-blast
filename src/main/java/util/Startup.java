@@ -7,6 +7,7 @@ import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import model.BoardEntity;
+import model.ScoreEntity;
 import model.User;
 
 import java.io.IOException;
@@ -41,6 +42,13 @@ public class Startup {
             user.userName = "dev";
             user.isAdmin = true;
             user.persist();
+            for (int i = 0; i < 30; i++) {
+                ScoreEntity score = new ScoreEntity();
+                score.score = i * 10;
+                score.board = BoardEntity.findById(1);
+                score.user = user;
+                score.persist();
+            }
         }
 
     }
