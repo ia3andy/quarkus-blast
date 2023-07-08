@@ -9,6 +9,8 @@ components:
         uri: Dockerfile
         buildContext: .
         rootRequired: false
+        args:
+          - 'QUARKUS_PROFILE=prod,github'
   - name: db-deploy
     attributes:
       deployment/replicas: 1

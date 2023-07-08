@@ -4,13 +4,13 @@
 <div class="container text-center game-container d-flex flex-grow-1 flex-column">
   <div class="container flex-grow-1 justify-content-center d-flex flex-column order-lg-1">
     {#if game.completed}
-    <div class="alert alert-success d-flex align-items-center mt-5" role="alert" _="on load call playSound('blasted', 100)">
+    <div class="alert alert-success d-flex align-items-center mt-5 mb-2" role="alert" _="on load call playSound('blasted', 100)">
       <i class="blast-score bi flex-shrink-0 me-2"></i>
       <div>
         Congratulation, you blasted it all, your subatomic score is: <b>{game.score}</b>
       </div>
-      {#include GameController/saveScore.html}{/include}
     </div>
+    {#include GameController/saveScore.html}{/include}
     {#else}
 
     <div class="game-grid container text-center">

@@ -24,5 +24,4 @@ public class UserController extends HxController {
         return Response.seeOther(Router.getURI(GameController::index)).cookie(security.makeUserCookie(user)).build();
     }
 
-
 }

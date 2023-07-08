@@ -145,11 +145,11 @@ public class GameController extends HxController {
     @Authenticated
     @POST
     @Transactional
-    @Path("/game/score/save")
+    @Path("/game/score/save/{id}")
     public Response saveScore(@NotNull @RestPath Long id) {
         onlyHxRequest();
         final GameEntity game = GameEntity.findById(id);
-        final BoardEntity board = BoardEntity.findById(game.id);
+        final BoardEntity board = BoardEntity.findById(game.board.id);
         notFoundIfNull(board);
         final ScoreEntity score = new ScoreEntity();
         score.board = board;

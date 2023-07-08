@@ -14,8 +14,10 @@ spec:
     spec:
       containers:
         - name: blast-quarkus
-          image: quay.io/redhat-user-workloads/rh-quarkus-tenant/quarkus-blast/blast-quarkus:build-2d70c-1688742938
+          image: quarkus-blast:1.0.0-SNAPSHOT
           env:
+            - name: QUARKUS_PROFILE
+              value: prod,github
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -26,12 +28,6 @@ spec:
                 secretKeyRef:
                   name: postgres-secrets
                   key: user
-            - name: GOOGLE_PROVIDER
-              valueFrom:
-                secretKeyRef:
-                  name: oidc-secrets
-                  key: google-provider
-                  optional: true
             - name: GOOGLE_CLIENT_ID
               valueFrom:
                 secretKeyRef:
@@ -43,12 +39,6 @@ spec:
                 secretKeyRef:
                   name: oidc-secrets
                   key: google-secret
-                  optional: true
-            - name: GITHUB_PROVIDER
-              valueFrom:
-                secretKeyRef:
-                  name: oidc-secrets
-                  key: github-provider
                   optional: true
             - name: GITHUB_CLIENT_ID
               valueFrom:
@@ -70,7 +60,7 @@ spec:
                   optional: true
           ports:
             - name: http
-              containerPort: 8081
+              containerPort: 8080
               protocol: TCP
           resources:
             requests:
@@ -83,9 +73,9 @@ metadata:
   name: blast-quarkus
 spec:
   ports:
-    - name: http-8081
-      port: 8081
+    - name: http-8080
+      port: 8080
       protocol: TCP
-      targetPort: 8081
+      targetPort: 8080
   selector:
     app: quarkus-blast-app
