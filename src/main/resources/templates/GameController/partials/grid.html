@@ -1,0 +1,24 @@
+<div class="game-grid container text-center">
+  {#for row in game.grid()}
+    <div class="row">
+      {#for col in row}
+        {#if !col.blasted}
+          {#let context=game.context.get(col.coords.toString()) selected=game.context.ifTruthy(game.context.selected).or(null)}
+            <div class="col cell {col.type}{#if context} {context}{/if}"
+              {#if context is "swappable"}hx-post="{uri:GameController.play(game.id, selected, col.coords.toString())}"{/if}
+              {#if context ne "selected"}hx-post="{uri:GameController.select(game.id, col.coords.toString)}"{/if}
+              {#if context is "selected"}hx-post="{uri:GameController.play(game.id, selected, selected)}"{/if}
+              hx-target="#content"
+            >
+              {col.charge}
+            </div>
+          {/let}
+        {#else if col.charge > 0}
+        <div class="col cell blasted" _="on load blast(me, '{col.type}', {col.charge}/1000)"></div>
+        {#else}
+        <div class="col cell blasted"></div>
+        {/if}
+      {/for}
+    </div>
+  {/for}
+</div>

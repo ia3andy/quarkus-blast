@@ -24,17 +24,17 @@ public class GameTest {
         Game grid = new Game(cells, rows, columns, 0);
 
         // Test valid cell retrieval
-        Cell cell = grid.cell(0, 0);
+        Cell cell = grid.cell(new Coords(0, 0));
         Assertions.assertEquals(new Cell(0, 0, QuarkType.UP, 1, false), cell);
 
-        cell = grid.cell(1, 1);
+        cell = grid.cell(new Coords(1, 1));
         Assertions.assertEquals(new Cell(1, 1, QuarkType.DOWN, 10, false), cell);
 
         // Test invalid cell retrieval
-        Cell invalidCell = grid.cell(2, 2); // Out of bounds
+        Cell invalidCell = grid.cell(new Coords(2, 2)); // Out of bounds
         Assertions.assertNull(invalidCell);
 
-        invalidCell = grid.cell(-1, 0); // Out of bounds
+        invalidCell = grid.cell(new Coords(-1, 0)); // Out of bounds
         Assertions.assertNull(invalidCell);
     }
 

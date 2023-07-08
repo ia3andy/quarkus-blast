@@ -54,6 +54,15 @@
   background-position-y: top;
   font-weight: bold;
   border-radius: 10px;
+  border: 2px solid transparent;
+
+  &.selected {
+    background-color: var(--blast-selected);
+  }
+
+  &.swappable {
+    border: 2px dashed var(--blast-selected);
+  }
 
   &.up {
     background-image: url("../quarks/up.svg");

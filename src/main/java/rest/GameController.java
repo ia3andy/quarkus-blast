@@ -1,6 +1,7 @@
 package rest;
 
 import game.Cell;
+import game.Coords;
 import game.Game;
 import game.GameGenerator;
 import game.QuarkType;
@@ -29,7 +30,10 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static model.GameEntity.findOrCreateBoardGame;
@@ -63,8 +67,6 @@ public class GameController extends HxController {
 
         public static native TemplateInstance gamePicker(GameData game, List<BoardEntity> boards);
 
-        public static native TemplateInstance saveScore(GameData game);
-
         public static native TemplateInstance game$content(GameData game);
     }
 
@@ -84,7 +86,7 @@ public class GameController extends HxController {
             if(!boards.isEmpty()) {
                 final BoardEntity board = boards.get(0);
                 final GameEntity game = findOrCreateBoardGame(user, board);
-                return Templates.game(new GameData(game), boards);
+                return Templates.game(new GameData(game, null), boards);
             }
         }
         return Templates.game(null, null);
@@ -95,7 +97,7 @@ public class GameController extends HxController {
     public TemplateInstance game(@NotNull @RestPath Long id) {
         final Optional<GameEntity> game = GameEntity.findByIdOptional(id);
         final List<BoardEntity> boards = BoardEntity.listAll();
-        final GameData gameData = game.map(GameData::new).orElse(null);
+        final GameData gameData = game.map(g -> new GameData(g, flash.get("context"))).orElse(null);
         if (isHxRequest()) {
             response.headers()
                     .set("HX-Push-Url", Router.getURI(GameController::game, id).getPath());
@@ -117,16 +119,36 @@ public class GameController extends HxController {
 
     @Authenticated
     @POST
-    @Path("/game/play")
-    public void play(@NotNull @RestPath Long id, @NotNull @RestPath int row, @NotNull @RestPath int column) {
+    @Path("/game/{id}/{coords}/select")
+    public void select(@NotNull @RestPath Long id, @NotNull @RestPath String coords) {
         onlyHxRequest();
         final GameEntity game = GameEntity.findById(id);
         notFoundIfNull(game);
-        final Game played = Game.play(game.toGame(), row, column);
+        game.setGame(game.toGame().cleanCharge());
+        game.persist();
+        final Coords parsed = Coords.parse(coords);
+        final Map<String, String> context = game.toGame().findSwappableCells(parsed)
+                .stream()
+                .collect(Collectors.toMap(Coords::toString, s -> "swappable"));
+        context.put(coords, "selected");
+        context.put("selected", coords);
+        flash("context", context);
+        game(id);
+    }
+
+    @Authenticated
+    @POST
+    @Path("/game/{id}/{from}/{to}/play")
+    public void play(@NotNull @RestPath Long id, @NotNull @RestPath String from, @NotNull @RestPath String to) {
+        onlyHxRequest();
+        final GameEntity game = GameEntity.findById(id);
+        notFoundIfNull(game);
+        final Game played = Game.play(game.toGame(), Coords.parse(from), Coords.parse(to));
         game.setGame(played);
         if (played.isCompleted()) {
             game.completed = Timestamp.from(Instant.now());
         }
+        game.persist();
         game(id);
     }
 
@@ -159,9 +181,9 @@ public class GameController extends HxController {
         return seeOther(Router.getURI(BoardController::leaderboard, board.id));
     }
 
-    public record GameData(Long id, Long boardId, String name, List<List<Cell>> grid, int score, Date completed) {
-        public GameData(GameEntity game) {
-            this(game.id, game.board.id, game.board.name, game.toGame().asGrid(), game.score, game.completed);
+    public record GameData(Long id, Long boardId, String name, List<List<Cell>> grid, Map<String, String> context, int score, Date completed) {
+        public GameData(GameEntity game, Map<String, String> context) {
+            this(game.id, game.board.id, game.board.name, game.toGame().asGrid(), context == null ? Map.of() : context, game.score, game.completed);
         }
 
     }

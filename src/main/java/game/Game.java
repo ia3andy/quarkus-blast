@@ -12,11 +12,12 @@ import java.util.stream.Collectors;
 
 public record Game(List<Cell> cells, int rows, int columns, int score) {
 
-    private static final int[][] DIRECTIONS = new int[][] { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } };
+    private static final Coords[] DIRECTIONS = new Coords[] { new Coords(-1, 0), new Coords(1, 0), new Coords(0, -1),
+            new Coords(0, 1) };
 
-    public Cell cell(int row, int column) {
-        int index = row * columns() + column;
-        return isValidCell(row, column) ? cells().get(index) : null;
+    public Cell cell(Coords coords) {
+        int index = coords.row() * columns() + coords.column();
+        return isValidCell(coords) ? cells().get(index) : null;
     }
 
     public List<List<Cell>> asGrid() {
@@ -24,41 +25,40 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
         for (int i = 0; i < rows(); i++) {
             List<Cell> row = new ArrayList();
             for (int j = 0; j < columns(); j++) {
-                row.add(cell(i, j));
+                row.add(cell(new Coords(i, j)));
             }
             table.add(row);
         }
         return table;
     }
 
-    public static int[] coords(int index, int columns) {
+    public static Coords coords(int index, int columns) {
         int row = index / columns;
         int column = index % columns;
-        return new int[] { row, column };
+        return new Coords(row, column);
     }
 
-    public boolean isValidCell(int row, int column) {
-        return row >= 0 && row < rows && column >= 0 && column < columns;
+    public boolean isValidCell(Coords coords) {
+        return coords.row() >= 0 && coords.row() < rows && coords.column() >= 0 && coords.column() < columns;
     }
 
     public boolean isCompleted() {
         return cells.stream().allMatch(Cell::blasted);
     }
 
-    public Game blast(Set<Cell> reaction, Set<Cell> lonely) {
+    public Game blast(Set<Cell> reaction) {
         List<Cell> newCells = cells.stream()
-                .map(c -> reaction.contains(c) || lonely.contains(c) ?
-                        new Cell(c.row(), c.column(), c.type(), c.charge(), true) :
+                .map(c -> reaction.contains(c) ?
+                        new Cell(c.coords(), c.type(), c.charge(), true) :
                         c)
                 .collect(Collectors.toList());
-        return new Game(newCells, rows(), columns(), score() + computePoints(reaction, lonely));
+        return new Game(newCells, rows(), columns(), score() + computePoints(reaction));
     }
 
     public boolean isAlone(Cell targetCell) {
-        for (int[] direction : DIRECTIONS) {
-            int newRow = targetCell.row() + direction[0];
-            int newColumn = targetCell.column() + direction[1];
-            Cell neighbor = cell(newRow, newColumn);
+        for (Coords direction : DIRECTIONS) {
+            Coords newCoords = targetCell.coords().add(direction);
+            Cell neighbor = cell(newCoords);
             if (neighbor != null && !neighbor.blasted()) {
                 return false;
             }
@@ -66,8 +66,8 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
         return true;
     }
 
-    public Set<Cell> detectReactionGroup(int row, int column) {
-        Cell targetCell = cell(row, column);
+    public Set<Cell> detectReactionGroup(Coords coords) {
+        Cell targetCell = cell(coords);
         QuarkType targetType = targetCell.type();
 
         Set<Cell> group = new HashSet<>();
@@ -78,31 +78,27 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
 
         while (!stack.isEmpty()) {
             Cell currentCell = stack.pop();
-
-            for (int[] direction : DIRECTIONS) {
-                int newRow = currentCell.row() + direction[0];
-                int newColumn = currentCell.column() + direction[1];
-
+            for (Coords direction : DIRECTIONS) {
+                Coords newCoords = currentCell.coords().add(direction);
+                Cell neighbor = cell(newCoords);
                 // Check if the new coordinates are within the cells boundaries
-                if (isValidCell(newRow, newColumn)) {
-                    Cell neighbor = cell(newRow, newColumn);
-
-                    // Check if the neighbor has the same type as the target cell
-                    if (!neighbor.blasted() && neighbor.type() == targetType && !group.contains(neighbor)) {
-                        group.add(neighbor);
-                        stack.push(neighbor);
-                    }
+                // Check if the neighbor has the same type as the target cell
+                if (neighbor != null
+                        && !neighbor.blasted()
+                        && neighbor.type() == targetType
+                        && !group.contains(neighbor)) {
+                    group.add(neighbor);
+                    stack.push(neighbor);
                 }
             }
         }
-
         return group;
     }
 
     public Game cleanCharge() {
         final List<Cell> newCells = cells.stream().map(c -> {
             if (c.blasted())
-                return new Cell(c.row(), c.column(), c.type(), 0, true);
+                return new Cell(c.coords(), c.type(), 0, true);
             return c;
         }).collect(Collectors.toList());
         return new Game(newCells, rows(), columns(), score());
@@ -111,59 +107,57 @@ public record Game(List<Cell> cells, int rows, int columns, int score) {
     public Game swapCells(Cell cell1, Cell cell2) {
         final List<Cell> newCells = cells.stream().map(c -> {
             if (cell1.equals(c))
-                return new Cell(c.row(), c.column(), cell2.type(), cell2.charge(), cell2.blasted());
+                return new Cell(c.coords(), cell2.type(), cell2.charge(), cell2.blasted());
             else if (cell2.equals(c))
-                return new Cell(c.row(), c.column(), cell1.type(), cell1.charge(), cell1.blasted());
+                return new Cell(c.coords(), cell1.type(), cell1.charge(), cell1.blasted());
             else if (c.blasted())
-                return new Cell(c.row(), c.column(), c.type(), 0, true);
+                return new Cell(c.coords(), c.type(), 0, true);
             return c;
         }).collect(Collectors.toList());
         return new Game(newCells, rows(), columns(), score());
     }
 
-    public static Game play(Game game, int row, int column) {
+    public static Game play(Game game, Coords from, Coords to) {
         Game cleaned = game.cleanCharge();
-        Cell selectedCell = cleaned.cell(row, column);
-        if (selectedCell == null) {
-            throw new IllegalStateException("Invalid selected cell: " + row + ":" + column);
+        Cell fromCell = cleaned.cell(from);
+        Cell toCell = cleaned.cell(to);
+        if (fromCell == null || toCell == null) {
+            throw new IllegalStateException("Invalid selected cells: " + from + "-" + toCell);
         }
-        final Optional<Cell> swap = cleaned.findCellToSwap(selectedCell);
-        if(swap.isEmpty()) {
-            return cleaned.blast(Set.of(selectedCell), Set.of());
+        if(fromCell.equals(toCell)) {
+            return cleaned.blast(Set.of(fromCell));
         }
-        final Game updated = cleaned.swapCells(selectedCell, swap.get());
+        final Game updated = cleaned.swapCells(fromCell, toCell);
         final Set<Cell> reaction = new HashSet<>();
-        reaction.addAll(updated.detectReactionGroup(row, column));
-        reaction.addAll(updated.detectReactionGroup(swap.get().row(), swap.get().column()));
-        final Set<Cell> lonely = updated.detectLonely();
-        return updated.blast(reaction, lonely);
+        reaction.addAll(updated.detectReactionGroup(from));
+        reaction.addAll(updated.detectReactionGroup(to));
+        return updated.blast(reaction);
     }
 
-    private Optional<Cell> findCellToSwap(final Cell selectedCell) {
-        Optional<Cell> current = Optional.empty();
-        for (int[] direction : DIRECTIONS) {
-            int newRow = selectedCell.row() + direction[0];
-            int newColumn = selectedCell.column() + direction[1];
-            Cell neighbor = cell(newRow, newColumn);
-            if (neighbor != null
-                    && !neighbor.blasted()
-                    && neighbor.charge() < selectedCell.charge()
-                    && (current.isEmpty() || neighbor.charge() < current.get().charge())) {
-                current = Optional.of(neighbor);
+    public Set<Coords> findSwappableCells(final Coords from) {
+        Cell fromCell = this.cell(from);
+        if (fromCell == null || fromCell.blasted()) {
+            throw new IllegalStateException("Invalid selected cell: " + from);
+        }
+        Set<Coords> cells = new HashSet<>();
+        for (Coords direction : DIRECTIONS) {
+            Coords newCoords = fromCell.coords().add(direction);
+            Cell neighbor = cell(newCoords);
+            if (neighbor != null && !neighbor.blasted()) {
+                cells.add(newCoords);
             }
         }
-        return current;
+        return cells;
     }
 
     private Set<Cell> detectLonely() {
         return cells.stream().filter(this::isAlone).collect(Collectors.toSet());
     }
 
-    static int computePoints(Collection<Cell> reaction, Set<Cell> lonely) {
+    static int computePoints(Collection<Cell> reaction) {
         int size = reaction.size();
         int charge = reaction.stream().mapToInt(Cell::charge).sum();
-        int lonelyCharge = lonely.stream().mapToInt(Cell::charge).sum();
-        return charge * size + lonelyCharge;
+        return charge * size;
     }
 
 }

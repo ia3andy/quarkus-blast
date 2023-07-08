@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import game.Coords;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -41,10 +42,10 @@ public class BoardEntity extends PanacheEntity {
     static List<Cell> toGameCells(List<StoredCell> cells, List<Boolean> blasted, int columns) {
         List<Cell> gameCells = new ArrayList<>();
         for (int i = 0; i < cells.size(); i++) {
-            final int[] coords = Game.coords(i, columns);
+            final Coords coords = Game.coords(i, columns);
             final StoredCell storedCell = cells.get(i);
-            final Boolean b = blasted.isEmpty() ? false : blasted.get(i);
-            gameCells.add(new Cell(coords[0], coords[1], storedCell.type(), storedCell.charge(), b));
+            final Boolean b = !blasted.isEmpty() && blasted.get(i);
+            gameCells.add(new Cell(coords, storedCell.type(), storedCell.charge(), b));
         }
         return gameCells;
     }
