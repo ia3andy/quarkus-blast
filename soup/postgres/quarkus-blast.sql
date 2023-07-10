@@ -1,13 +1,13 @@
 
-    create sequence BoardEntity_SEQ start with 1 increment by 50;
+    create sequence board_SEQ start with 1 increment by 50;
 
-    create sequence GameEntity_SEQ start with 1 increment by 50;
+    create sequence game_SEQ start with 1 increment by 50;
 
-    create sequence ScoreEntity_SEQ start with 1 increment by 50;
+    create sequence player_SEQ start with 1 increment by 50;
 
-    create sequence user_table_SEQ start with 1 increment by 50;
+    create sequence score_SEQ start with 1 increment by 50;
 
-    create table BoardEntity (
+    create table board (
         id bigint not null,
         cells jsonb,
         columns integer not null,
@@ -16,7 +16,7 @@
         primary key (id)
     );
 
-    create table GameEntity (
+    create table game (
         id bigint not null,
         blasted jsonb,
         cells jsonb,
@@ -30,16 +30,7 @@
         primary key (id)
     );
 
-    create table ScoreEntity (
-        id bigint not null,
-        created timestamp(6),
-        score integer not null,
-        board_id bigint,
-        user_id bigint,
-        primary key (id)
-    );
-
-    create table user_table (
+    create table player (
         id bigint not null,
         authId varchar(255),
         email varchar(255) not null,
@@ -49,25 +40,35 @@
         tenantId varchar(255),
         userName varchar(255),
         primary key (id),
-        constraint UKqr8msbrh4ksy0f8jtgy7itt5l unique (tenantId, authId)
+        constraint UK4rgillcwnwi6bv70t16039nfm unique (tenantId, authId)
     );
 
-    alter table if exists GameEntity
-       add constraint FK1lgdkx891x9svvvgboyvjoaie
+    create table score (
+        id bigint not null,
+        created timestamp(6),
+        score integer not null,
+        board_id bigint,
+        user_id bigint,
+        primary key (id),
+        constraint UKo6s1kff5nbxso60akmnxb9mhy unique (board_id, user_id)
+    );
+
+    alter table if exists game
+       add constraint FK7xfop7fngh26l311rh6nevt09
        foreign key (board_id)
-       references BoardEntity;
+       references board;
 
-    alter table if exists GameEntity
-       add constraint FK7vxg81wavjt76bx5b1lrsfjmw
+    alter table if exists game
+       add constraint FKin4h8o8ybi5sfmqsaqg40xut3
        foreign key (user_id)
-       references user_table;
+       references player;
 
-    alter table if exists ScoreEntity
-       add constraint FKanq04ctj0y1cmxfahmpqvtkni
+    alter table if exists score
+       add constraint FK1ansl6hy9xqpr3e2l95yp1pqr
        foreign key (board_id)
-       references BoardEntity;
+       references board;
 
-    alter table if exists ScoreEntity
-       add constraint FK6sf5tvq95otis7sebcm939eco
+    alter table if exists score
+       add constraint FKkk3rimvuokqfn3oet1c1i1jt5
        foreign key (user_id)
-       references user_table;
+       references player;
