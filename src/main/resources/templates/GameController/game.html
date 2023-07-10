@@ -1,22 +1,18 @@
 {#include layout/page.html}
 {#fragment id=content}
   {#if game}
-    <div class="container text-center game-container d-flex flex-grow-1 flex-column">
-      {#if game.completed}
-        <div class="container flex-grow-1 justify-content-start d-flex flex-column order-lg-1">
-          {#include GameController/partials/completed.html}{/include}
-        </div>
-      {#else}
-        <div class="container flex-grow-1 justify-content-center d-flex flex-column order-lg-1">
-          {#include GameController/partials/grid.html}{/include}
-          {#include GameController/partials/score.html}{/include}
-        </div>
-      {/if}
+    <div class="text-center game-container d-flex flex-grow-1 flex-column">
+      <div class="flex-grow-1 justify-content-center d-flex flex-column order-lg-1">
+        {#include GameController/partials/grid.html}{/include}
+        {#include GameController/partials/score.html}{/include}
+      </div>
       {#include GameController/partials/nav.html}{/include}
     </div>
   {#else}
-    <div class="alert alert-warning" role="alert">
-      Game not found
+    <div class="container p-3 mt-3">
+      <div class="alert alert-warning" role="alert">
+        Game not found
+      </div>
     </div>
   {/if}
 {/fragment}

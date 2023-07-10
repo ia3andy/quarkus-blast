@@ -1,14 +1,15 @@
 package model;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import io.quarkiverse.renarde.security.RenardeUser;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "player", uniqueConstraints = @UniqueConstraint(columnNames = {"tenantId", "authId"}))

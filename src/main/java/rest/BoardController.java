@@ -50,10 +50,10 @@ public class BoardController extends HxController {
 
         public static native TemplateInstance create$content(CreateBoardData board);
 
-        public static native TemplateInstance leaderboard(List<BoardEntity> boards, String boardName,
+        public static native TemplateInstance leaderboard(List<BoardEntity> boards, Long boardId, String boardName,
                 List<ScoreData> leaderboard);
 
-        public static native TemplateInstance leaderboard$content(String boardName, List<ScoreData> leaderboard);
+        public static native TemplateInstance leaderboard$content(Long boardId, String boardName, List<ScoreData> leaderboard);
     }
 
     @Authenticated
@@ -66,8 +66,8 @@ public class BoardController extends HxController {
             final ScoreEntity score = scores.get(i);
             scoreData.add(new ScoreData(i + 1, score.user.userName, score.user.email, score.score));
         }
-        return isHxRequest() ? Templates.leaderboard$content(board.name, scoreData) :
-                Templates.leaderboard(BoardEntity.listAll(), board.name, scoreData);
+        return isHxRequest() ? Templates.leaderboard$content(board.id, board.name, scoreData) :
+                Templates.leaderboard(BoardEntity.listAll(), board.id, board.name, scoreData);
     }
 
     @Authenticated

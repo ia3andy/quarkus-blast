@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: blast-postgres
-          image: quay.io/redhat-user-workloads/rh-quarkus-tenant/quarkus-blast/blast-postgres:build-6a892-1688725448
+          image: quay.io/redhat-user-workloads/rh-quarkus-tenant/quarkus-blast/blast-postgres:build-ac662-1688986144
           env:
             - name: PGDATA
               value: /work/data
@@ -33,11 +33,11 @@ spec:
               name: db-port
           resources:
             requests:
-              cpu: "200m"
+              cpu: "400m"
               memory: "128Mi"
             limits:
-              cpu: "500m"
-              memory: "256Mi"
+              cpu: "1000m"
+              memory: "512Mi"
           volumeMounts:
             - name: blast-postgres-data
               mountPath: /work

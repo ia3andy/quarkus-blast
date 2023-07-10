@@ -111,6 +111,9 @@ public class GameController extends HxController {
     @Path("/game/{id}")
     public TemplateInstance game(@NotNull @RestPath Long id) {
         final Optional<GameEntity> game = GameEntity.findByIdOptional(id);
+        if(game.isPresent() && game.get().completed != null) {
+            seeOther(Router.getURI(BoardController::leaderboard, game.get().board.id));
+        }
         final List<BoardEntity> boards = BoardEntity.listAll();
         final GameData gameData = game.map(g -> new GameData(g, flash.get("context"))).orElse(null);
         if (isHxRequest()) {
@@ -135,7 +138,7 @@ public class GameController extends HxController {
     @Authenticated
     @POST
     @Path("/game/{id}/{coords}/select")
-    public void select(@NotNull @RestPath Long id, @NotNull @RestPath String coords) {
+    public void select(@NotNull @RestPath Long id, @NotNull @RestPath String coords) throws Exception {
         onlyHxRequest();
         final GameEntity game = GameEntity.findById(id);
         notFoundIfNull(game);
@@ -154,17 +157,21 @@ public class GameController extends HxController {
     @Authenticated
     @POST
     @Path("/game/{id}/{from}/{to}/play")
-    public void play(@NotNull @RestPath Long id, @NotNull @RestPath String from, @NotNull @RestPath String to) {
+    public void play(@NotNull @RestPath Long id, @NotNull @RestPath String from, @NotNull @RestPath String to)
+            throws Exception {
         onlyHxRequest();
         final GameEntity game = GameEntity.findById(id);
         notFoundIfNull(game);
+        if(game.completed != null) {
+            seeOther(Router.getURI(BoardController::leaderboard, game.board.id));
+        }
         final Game played = Game.play(game.toGame(), Coords.parse(from), Coords.parse(to));
         game.setGame(played);
         if (played.isCompleted()) {
             game.completed = Timestamp.from(Instant.now());
             game.persist();
             final ScoreEntity score = saveScore(game);
-            seeOther(Router.getURI(BoardController::leaderboard, score.id));
+            seeOther(Router.getURI(BoardController::leaderboard, score.board.id));
         }
         game.persist();
         game(id);

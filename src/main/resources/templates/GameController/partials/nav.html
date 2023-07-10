@@ -1,14 +1,16 @@
-<ul class="game-nav nav nav-pills flex-nowrap align-items-center order-lg-0">
-  <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content" hx-confirm="This will start a new game, are you sure?">
+{@rest.GameController.GameData game}
+
+<ul class="page-nav nav nav-pills flex-nowrap order-lg-0 p-3">
+  <li class="nav-item nav-left" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content" hx-confirm="This will start a new game, are you sure?">
     <button class="nav-link">
     <i class="bi bi-x-octagon"></i>
     <span class="d-none d-lg-block">Restart</span>
     </button>
   </li>
-  <li class="nav-item flex-grow-1">
+  <li class="nav-item">
     <h3>{game.name}</h3>
   </li>
-  <li class="nav-item" hx-get="{uri:BoardController.leaderboard(game.boardId)}" hx-push-url="true" hx-target="#content">
+  <li class="nav-item nav-right" hx-get="{uri:BoardController.leaderboard(game.boardId)}" hx-push-url="true" hx-target="#content">
     <button class="nav-link">
     <i class="bi bi-trophy"></i>
     <span class="d-none d-lg-block">Leaderboard</span>

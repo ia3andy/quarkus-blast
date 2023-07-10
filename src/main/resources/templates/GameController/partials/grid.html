@@ -1,13 +1,15 @@
+{@rest.GameController.GameData game}
+
 <div class="game-grid container text-center">
   {#for row in game.grid()}
-    <div class="row">
+    <div class="row flex-nowrap">
       {#for col in row}
         {#if !col.blasted}
           {#let context=game.context.get(col.coords.toString()) selected=game.context.ifTruthy(game.context.selected).or(null)}
             <div class="col cell {col.type}{#if context} {context}{/if}"
-              {#if context is "swappable"}hx-post="{uri:GameController.play(game.id, selected, col.coords.toString())}" _="on click add .playing-swappable to me then add .locked to .game-grid"{/if}
-              {#if context ne "selected"}hx-post="{uri:GameController.select(game.id, col.coords.toString)}" _="on click add .selected to me then add .locked to .game-grid"{/if}
-              {#if context is "selected"}hx-post="{uri:GameController.play(game.id, selected, selected)}" _="on click add .locked to .game-grid"{/if}
+              {#if context is "swappable"}hx-post="{uri:GameController.play(game.id, selected, col.coords.toString())}" _="on click remove .swappable from .cell then add .swappable .playing-swappable to me then add .locked .playing to .game-grid"{/if}
+              {#if context ne "selected"}hx-post="{uri:GameController.select(game.id, col.coords.toString)}" _="on click remove .selected .swappable from .cell then add .selected to me then add .locked .selecting to .game-grid"{/if}
+              {#if context is "selected"}hx-post="{uri:GameController.play(game.id, selected, selected)}" _="on click remove .swappable from .cell then add .locked .playing to .game-grid"{/if}
               hx-trigger="click"
               hx-target="#content"
             >

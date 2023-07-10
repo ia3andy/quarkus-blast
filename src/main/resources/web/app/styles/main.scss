@@ -35,6 +35,25 @@ h1 {
   min-height: 0;
 }
 
+.page-nav {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .nav-left, .nav-right {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .nav-left { left: 0; }
+  .nav-right { right: 0; }
+}
+
 @import "sidebar";
 @import "blast";
 @import "leaderboard";

@@ -1,23 +1,25 @@
 .game-grid.locked {
   pointer-events: none;
 
-  .cell.selected .quark-icon  {
+  &.selecting .cell.selected .quark-icon  {
     animation: spin 2s infinite ease;
   }
 
-  .cell.playing-swappable .quark-icon, .cell.selected .quark-icon {
+  &.playing .cell.playing-swappable .quark-icon, &.playing .cell.selected {
     animation: shake 0.8s infinite linear;
     transform-origin: 50% 100%;
   }
 
+
+
 }
 
 .cell, .quark-type {
-  margin: 5px;
+  margin: 3px;
   display: flex;
   flex-direction: column;
-  height: 100px;
-  width: 100px;
+  height: 80px;
+  width: 80px;
   cursor: pointer;
   text-align: center;
   position: relative;
@@ -31,22 +33,23 @@
 
   .quark-icon {
     overflow: visible;
-    height: 60px;
-    width: 60px;
+    height: 50px;
+    width: 50px;
     background-repeat: no-repeat;
     background-position-x: center;
-    background-size: 60px;
+    background-size: 50px;
     background-position-y: top;
     transform-origin: 50%;
   }
 
   &.blasted .quark-icon {
-    background-size: 90px;
-    height: 90px;
-    width: 90px;
+    background-size: 70px;
+    height: 70px;
+    width: 70px;
   }
 
   @media only screen and (max-width: 768px) {
+    margin: 1px;
     height: 50px;
     width: 50px;
     font-size: 12px;
@@ -147,6 +150,7 @@
 
 .game-container {
   max-width: 700px;
+  width: 100%;
 
   .score {
     border: 3px solid #FFDAB9; /* Pastel Peach Puff */
