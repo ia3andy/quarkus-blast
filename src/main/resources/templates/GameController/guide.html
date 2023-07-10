@@ -1,18 +1,19 @@
 {#include layout/page.html}
 {#fragment id=content}
-  <div class="container overflow-auto content-page p-3">
+  <div class="container overflow-auto content-page">
     <h1>Guide</h1>
     <div class="mt-5 alert alert-info">
-      <p>Quarkus Blast is an exciting game that pushes the limits of Quarkus server-side rendering (Renarde, Qute and Web Bundler) with htmx.</p>
+      <p>Quarkus Blast is made with Quarkus server-side rendering and htmx.</p>
       <ul>
-        <li>You'll encounter 6 Quark types (up, down, charm, strange, top, bottom) with different charges on a grid waiting for you to tap into their power..</li>
+        <li>6 Quark types (up, down, charm, strange, top, bottom) with different charges.</li>
         <li>Tap a Quark to select it, then tap another Quark to swap their positions.</li>
-        <li>Keep your eyes peeled for clusters of the same Quark type adjacent to each other because when they align, a blast reaction is triggered! Each blast reaction generates points based on the total charge and the number of Quarks involved. </li>
+        <li>If there are adjacent Quarks of the same type, a blast reaction is triggered!</li>
+        <li><b>Make big reactions for maximum points!</b></li>
         <li>Watch out for combos! If multiple blast reactions occur simultaneously, it's a combo, yielding even more points.</li>
         <li>No possible reaction, tap the same Quark twice to make it blast.</li>
       </ul>
-      <p>Your goal is to maximize your score by strategically swapping Quarks, triggering blast reactions, and unleashing powerful combos. Aim to blast it all and conquer the leaderboard!</p>
-      <button type="button" class="btn btn-primary" hx-push-url="true" hx-get="{uri:GameController.start}" hx-target="#content">Start</button>
+      <p>Aim to blast it all and conquer the leaderboard!</p>
+      <button type="button" class="btn btn-primary" hx-push-url="true" hx-get="{uri:GameController.start}" hx-target="#content">GO BLAST!</button>
     </div>
   </div>
 {/fragment}
