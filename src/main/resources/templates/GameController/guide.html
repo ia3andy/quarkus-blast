@@ -1,17 +1,17 @@
 {#include layout/page.html}
 {#fragment id=content}
-  <div class="container overflow-auto leaderboard">
+  <div class="container overflow-auto content-page">
     <h1>Guide</h1>
     <div class="mt-5 alert alert-info">
-      <p>Quarkus Blast is a game to find how far we can go with Quarkus server side rendering (Renarde and Qute) and htmx.</p>
+      <p>Quarkus Blast is an exciting game that pushes the limits of Quarkus server-side rendering (Renarde, Qute and Web Bundler) with htmx.</p>
       <ul>
-        <li>You have 6 Quarks types (up, down, charm, stange, top, bottom) placed on a grid with different charges.</li>
-        <li>Tap on a Quark to selected it, then tap on another to swap them.</li>
-        <li>Tap on the same Quark to blast it</li>
-        <li>When the same Quarks are next to each other, a blast reaction is triggered and generate the total charge time the number of Quarks of the reaction points</li>
-        <li>Two reactions can happen at the same time, it's a combo</li>
+        <li>You'll encounter 6 Quark types (up, down, charm, strange, top, bottom) with different charges on a grid waiting for you to tap into their power..</li>
+        <li>Tap a Quark to select it, then tap another Quark to swap their positions.</li>
+        <li>Keep your eyes peeled for clusters of the same Quark type adjacent to each other because when they align, a blast reaction is triggered! Each blast reaction generates points based on the total charge and the number of Quarks involved. </li>
+        <li>Watch out for combos! If multiple blast reactions occur simultaneously, it's a combo, yielding even more points.</li>
+        <li>No possible reaction, tap the same Quark twice to make it blast.</li>
       </ul>
-      <p><b>Go blast it all!</b></p>
+      <p>Your goal is to maximize your score by strategically swapping Quarks, triggering blast reactions, and unleashing powerful combos. Aim to blast it all and conquer the leaderboard!</p>
       <button type="button" class="btn btn-primary" hx-push-url="true" hx-get="{uri:GameController.start}" hx-target="#content">Start</button>
     </div>
   </div>

@@ -27,6 +27,13 @@ h1 {
   text-align: center;
 }
 
+#content {
+  min-height: 0;
+}
+
+.content-page {
+  min-height: 0;
+}
 
 @import "sidebar";
 @import "blast";

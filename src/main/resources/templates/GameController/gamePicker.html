@@ -1,20 +1,14 @@
 {#let selectedBoardId=game.ifTruthy(game.boardId).or(-1)}
-<ul id="game-picker" class="nav nav-pills flex-column mb-auto"  hx-swap-oob="true">
+<ul id="game-picker" class="nav nav-pills flex-column mb-auto flex-grow-1"  hx-swap-oob="true">
   {#for board in boards}
-  <li class="nav-item" >
-    <button class="nav-link{#if board.id == selectedBoardId} selected{/if} text-nowrap" hx-get="{uri:GameController.startGameFromBoard(board.id)}" hx-target="#content" hx-swap="innerHTML" data-bs-dismiss="offcanvas" data-bs-target="#sidebar">
+  <li class="nav-item d-flex flex-nowrap" >
+    <button class="nav-link{#if board.id == selectedBoardId} selected{/if} text-nowrap text-start flex-grow-1" hx-get="{uri:GameController.startGameFromBoard(board.id)}" hx-target="#content" data-bs-dismiss="offcanvas" data-bs-target="#sidebar">
     <i class="me bi bi-chevron-right"></i>
     {board.name}
     </button>
-  </li>
-  {/for}
-</ul>
-<hr>
-<ul class="nav nav-pills flex-column mb-auto flex-grow-1">
-  <li class="nav-item" >
-    <button class="nav-link text-nowrap" hx-get="{uri:GameController.guide}" hx-target="#content" hx-swap="innerHTML" data-bs-dismiss="offcanvas" data-bs-target="#sidebar">
-      <i class="me bi bi-patch-question"></i>
-      Guide
+    <button class="nav-link" hx-delete="{uri:BoardController.delete(board.id)}" hx-target="#content" hx-confirm="Are you sure?">
+      <i class="bi bi-trash3"></i>
     </button>
   </li>
+  {/for}
 </ul>

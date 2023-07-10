@@ -18,6 +18,15 @@
     </ul>
     <hr>
   {/if}
+  <ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item" >
+      <button class="nav-link text-nowrap" hx-get="{uri:GameController.guide}" hx-target="#content" hx-push-url="true" data-bs-dismiss="offcanvas" data-bs-target="#sidebar">
+        <i class="me bi bi-patch-question"></i>
+        Guide
+      </button>
+    </li>
+  </ul>
+  <hr>
   <h3>Games</h3>
   {#include GameController/gamePicker.html /}
   <hr>

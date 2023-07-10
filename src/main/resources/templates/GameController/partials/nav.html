@@ -1,7 +1,7 @@
 <ul class="game-nav nav nav-pills flex-nowrap align-items-center order-lg-0">
-  <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content">
+  <li class="nav-item" hx-post="{uri:GameController.restart(game.id)}" hx-target="#content" hx-confirm="This will start a new game, are you sure?">
     <button class="nav-link">
-    <i class="bi bi-arrow-clockwise"></i>
+    <i class="bi bi-x-octagon"></i>
     <span class="d-none d-lg-block">Restart</span>
     </button>
   </li>

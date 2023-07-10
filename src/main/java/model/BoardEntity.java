@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import game.Coords;
+import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -17,6 +18,7 @@ import jakarta.persistence.Entity;
 import model.GameEntity.StoredCell;
 
 @Entity
+@Table(name = "board")
 public class BoardEntity extends PanacheEntity {
     public String name;
     public int rows;

@@ -1,5 +1,4 @@
 .leaderboard {
-  min-height: 1vw;
 
   .score-item {
 
@@ -32,6 +31,19 @@
     text-align: right;
     width: 50px;
   }
+  @media only screen and (max-width: 768px) {
+    .score-item {
+      font-size: 18px;
+      margin-left: 60px;
+    }
+
+    .rank {
+      font-size: 22px;
+      left: -60px;
+      width: 35px;
+    }
+  }
+
   .avatar {
     height: 30px;
     img {

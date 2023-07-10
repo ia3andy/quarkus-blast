@@ -12,7 +12,9 @@ import io.quarkus.security.Authenticated;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Positive;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.WebApplicationException;
@@ -89,12 +91,27 @@ public class BoardController extends HxController {
         if(!security.getUser().roles().contains("admin")) {
             throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).build());
         }
-        GameEntity.deleteAll();
         final List<Cell> cells = gameGenerator.generateCells(rows, columns, minCharge, maxCharge);
         String boardName = StringUtil.isNullOrEmpty(name) ? new Haikunator().setTokenLength(0).haikunate() : name;
         final BoardEntity board = BoardEntity.fromCells(boardName, cells, rows, columns);
         board.persist();
         return seeOther(Router.getURI(GameController::startGameFromBoard, board.id));
+    }
+
+    @Authenticated
+    @DELETE
+    @Transactional
+    @Path("{boardId}")
+    public Response delete(@RestPath Long boardId) {
+        onlyHxRequest();
+        if(!security.getUser().roles().contains("admin")) {
+            throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).build());
+        }
+        GameEntity.deleteAll();
+        ScoreEntity.deleteAll();
+        BoardEntity.deleteById(boardId);
+        hx(HxResponseHeader.LOCATION, Router.getURI(GameController::index).getPath());
+        return seeOther(Router.getURI(GameController::index));
     }
 
 

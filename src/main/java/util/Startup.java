@@ -42,10 +42,10 @@ public class Startup {
             user.userName = "dev";
             user.isAdmin = true;
             user.persist();
-            for (int i = 0; i < 30; i++) {
+            for (int i = 1; i < boardsList.size(); i++) {
                 ScoreEntity score = new ScoreEntity();
-                score.score = i * 10;
-                score.board = BoardEntity.findById(1);
+                score.score = 50;
+                score.board = BoardEntity.findById(i);
                 score.user = user;
                 score.persist();
             }

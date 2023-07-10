@@ -1,8 +1,26 @@
 {#include layout/page.html}
 {#fragment id=content}
-  <div class="container overflow-auto leaderboard">
+  <div class="container overflow-auto leaderboard content-page">
     <h1><i class="bi me-3 bi-trophy"></i>{boardName}</h1>
-    <div class="mt-5">
+    <div class="mt-5 mb-5">
+      {#if flash:score}
+        <div class="alert alert-success d-flex align-items-center mb-4 game-completed" role="alert" _="on load call playSound('blasted', 100)">
+            <i class="blast-score bi flex-shrink-0 me-4"></i>
+            <div>
+              <div class="mb-2">
+                {#if flash:newScore}
+                  Congratulation, you blasted it all.
+                {#else if flash:newBestScore}
+                  Awesome, this is a new personal best.
+                {#else}
+                  You didn't beat your best score
+                {/if}
+                Your subatomic score is:
+              </div>
+              <div class="score">{flash:score} <span class="unit">points</span></div>
+            </div>
+        </div>
+      {/if}
 
       {#for item in leaderboard}
         <div class="score-item">
@@ -16,7 +34,7 @@
               {item.userName}
             </div>
             <div class="score text-end">
-              {item.score} <span class="unit">points</span>
+              {item.score} <span class="unit d-lg-none">p</span><span class="unit d-none d-lg-inline">points</span>
             </div>
           </div>
       {/for}

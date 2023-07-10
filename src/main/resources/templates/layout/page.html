@@ -23,7 +23,7 @@
       <div id="sidebar" class="sidebar offcanvas-lg offcanvas-start navbar-expand-md d-flex flex-column p-3 text-white bg-dark">
         {#include layout/sidebar.html /}
       </div>
-      <div id="content" class="d-flex flex-column flex-grow-1 p-3 bg-light">
+      <div class="d-flex flex-column flex-grow-1 p-3 bg-light">
         <div class="navbar navbar-expand-lg">
           <div class="container-fluid">
             <button type="button" id="sidebar-button" class="sidebar-toggler navbar-toggler d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#sidebar">
@@ -31,14 +31,16 @@
             </button>
           </div>
         </div>
-        {#if !inject:user}
-          <div class="container text-center game-container">
-            <h1>Welcome to Quarkus Blast</h1>
-            Please login (on the left menu) before you can do anything.
-          </div>
-        {#else}
-          {#insert /}
-        {/if}
+        <div id="content" class="d-flex flex-column flex-grow-1 mt-2">
+          {#if !inject:user}
+            <div class="container text-center game-container">
+              <h1>Welcome to Quarkus Blast</h1>
+              Please login (on the left menu) before you can do anything.
+            </div>
+          {#else}
+            {#insert /}
+          {/if}
+        </div>
       </div>
     </main>
   </body>

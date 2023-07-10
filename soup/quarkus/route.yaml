@@ -2,7 +2,10 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: quarkus-blast
+  annotations:
+    kubernetes.io/tls-acme: "true"
 spec:
+  host: quarkus-blast.apps.ospo-osci.z3b1.p1.openshiftapps.com
   to:
     kind: Service
     name: blast-quarkus

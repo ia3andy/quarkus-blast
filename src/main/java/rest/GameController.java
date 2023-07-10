@@ -90,7 +90,8 @@ public class GameController extends HxController {
     }
 
     public TemplateInstance guide() {
-        return isHxRequest() ? Templates.guide$content() : Templates.guide(BoardEntity.listAll());
+        final List<BoardEntity> boards = BoardEntity.listAll();
+        return isHxRequest() ? concatTemplates(Templates.guide$content(), Templates.gamePicker(null, boards)) : Templates.guide(boards);
     }
 
     @Authenticated
@@ -161,6 +162,9 @@ public class GameController extends HxController {
         game.setGame(played);
         if (played.isCompleted()) {
             game.completed = Timestamp.from(Instant.now());
+            game.persist();
+            final ScoreEntity score = saveScore(game);
+            seeOther(Router.getURI(BoardController::leaderboard, score.id));
         }
         game.persist();
         game(id);
@@ -178,21 +182,27 @@ public class GameController extends HxController {
         return seeOther(Router.getURI(GameController::startGameFromBoard, board.id));
     }
 
-    @Authenticated
-    @POST
-    @Transactional
-    @Path("/game/score/save/{id}")
-    public Response saveScore(@NotNull @RestPath Long id) {
-        onlyHxRequest();
-        final GameEntity game = GameEntity.findById(id);
+
+    private ScoreEntity saveScore(GameEntity game) {
         final BoardEntity board = BoardEntity.findById(game.board.id);
         notFoundIfNull(board);
-        final ScoreEntity score = new ScoreEntity();
-        score.board = board;
-        score.user = getUser();
-        score.score = game.score;
-        score.persist();
-        return seeOther(Router.getURI(BoardController::leaderboard, board.id));
+        ScoreEntity score = ScoreEntity.findUserScore(getUser(), board);
+        flash("score", game.score);
+        if (score != null) {
+            if(score.score < game.score) {
+                score.score = game.score;
+                score.persist();
+                flash("newBestScore", true);
+            }
+        } else {
+            score = new ScoreEntity();
+            score.board = board;
+            score.user = getUser();
+            score.score = game.score;
+            score.persist();
+            flash("newScore", true);
+        }
+        return score;
     }
 
     public record GameData(Long id, Long boardId, String name, List<List<Cell>> grid, Map<String, String> context, int score, Date completed) {
