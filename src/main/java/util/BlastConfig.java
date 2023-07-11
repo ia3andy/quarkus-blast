@@ -11,6 +11,9 @@ public interface BlastConfig {
 
     @WithDefault("false")
     boolean devUser();
+
+    @WithDefault("false")
+    boolean devAutoLogin();
     Optional<Set<String>> admins();
 
 }

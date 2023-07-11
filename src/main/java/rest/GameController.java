@@ -11,6 +11,7 @@ import io.quarkiverse.renarde.security.RenardeSecurity;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.TemplateGlobal;
 import io.quarkus.qute.TemplateInstance;
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.security.Authenticated;
 import io.smallrye.common.annotation.Blocking;
 import jakarta.inject.Inject;
@@ -24,7 +25,9 @@ import model.GameEntity;
 import model.ScoreEntity;
 import model.User;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.jboss.resteasy.reactive.RestForm;
 import org.jboss.resteasy.reactive.RestPath;
+import util.BlastConfig;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -76,6 +79,8 @@ public class GameController extends HxController {
     @Inject
     RenardeSecurity security;
 
+    @Inject BlastConfig config;
+
     private User getUser() {
         return (User) security.getUser();
     }
@@ -85,6 +90,9 @@ public class GameController extends HxController {
         User user = getUser();
         if (user != null) {
             return guide();
+        }
+        if (LaunchMode.current().isDevOrTest() && config.devUser() && config.devAutoLogin()) {
+            seeOther(Router.getURI(UserController::loginDev));
         }
         return Templates.game(null, null);
     }
@@ -115,7 +123,7 @@ public class GameController extends HxController {
             seeOther(Router.getURI(BoardController::leaderboard, game.get().board.id));
         }
         final List<BoardEntity> boards = BoardEntity.listAll();
-        final GameData gameData = game.map(g -> new GameData(g, flash.get("context"))).orElse(null);
+        final GameData gameData = game.map(GameData::new).orElse(null);
         if (isHxRequest()) {
             response.headers()
                     .set("HX-Push-Url", Router.getURI(GameController::game, id).getPath());
@@ -137,27 +145,8 @@ public class GameController extends HxController {
 
     @Authenticated
     @POST
-    @Path("/game/{id}/{coords}/select")
-    public void select(@NotNull @RestPath Long id, @NotNull @RestPath String coords) throws Exception {
-        onlyHxRequest();
-        final GameEntity game = GameEntity.findById(id);
-        notFoundIfNull(game);
-        game.setGame(game.toGame().cleanCharge());
-        game.persist();
-        final Coords parsed = Coords.parse(coords);
-        final Map<String, String> context = game.toGame().findSwappableCells(parsed)
-                .stream()
-                .collect(Collectors.toMap(Coords::toString, s -> "swappable"));
-        context.put(coords, "selected");
-        context.put("selected", coords);
-        flash("context", context);
-        game(id);
-    }
-
-    @Authenticated
-    @POST
-    @Path("/game/{id}/{from}/{to}/play")
-    public void play(@NotNull @RestPath Long id, @NotNull @RestPath String from, @NotNull @RestPath String to)
+    @Path("/game/{id}/play")
+    public void play(@NotNull @RestPath Long id, @NotNull @RestForm String from, @NotNull @RestForm String to)
             throws Exception {
         onlyHxRequest();
         final GameEntity game = GameEntity.findById(id);
@@ -212,9 +201,9 @@ public class GameController extends HxController {
         return score;
     }
 
-    public record GameData(Long id, Long boardId, String name, List<List<Cell>> grid, Map<String, String> context, int score, Date completed) {
-        public GameData(GameEntity game, Map<String, String> context) {
-            this(game.id, game.board.id, game.board.name, game.toGame().asGrid(), context == null ? Map.of() : context, game.score, game.completed);
+    public record GameData(Long id, Long boardId, String name, List<List<Cell>> grid, int score, Date completed) {
+        public GameData(GameEntity game) {
+            this(game.id, game.board.id, game.board.name, game.toGame().asGrid(), game.score, game.completed);
         }
 
     }

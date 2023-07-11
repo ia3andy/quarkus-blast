@@ -5,18 +5,16 @@
     <div class="row flex-nowrap">
       {#for col in row}
         {#if !col.blasted}
-          {#let context=game.context.get(col.coords.toString()) selected=game.context.ifTruthy(game.context.selected).or(null)}
-            <div class="col cell {col.type}{#if context} {context}{/if}"
-              {#if context is "swappable"}hx-post="{uri:GameController.play(game.id, selected, col.coords.toString())}" _="on click remove .swappable from .cell then add .swappable .playing-swappable to me then add .locked .playing to .game-grid"{/if}
-              {#if context ne "selected"}hx-post="{uri:GameController.select(game.id, col.coords.toString)}" _="on click remove .selected .swappable from .cell then add .selected to me then add .locked .selecting to .game-grid"{/if}
-              {#if context is "selected"}hx-post="{uri:GameController.play(game.id, selected, selected)}" _="on click remove .swappable from .cell then add .locked .playing to .game-grid"{/if}
-              hx-trigger="click"
-              hx-target="#content"
-            >
-              <div class="quark-icon"></div>
-              {col.charge}
-            </div>
-          {/let}
+          <div class="col cell {col.type}"
+            _="on click if $from exists add .selected to me then add .locked to .game-grid then send playSwap(from:$from, to:'{col.coords}') then set $from to null else add .selected to me then set $from to '{col.coords}'"
+            hx-post="{uri:GameController.play(game.id)}"
+            hx-vals='js:\{ from: event.detail.from, to: event.detail.to}' hx-target="#content"
+            hx-trigger="playSwap"
+            hx-target="#content"
+          >
+            <div class="quark-icon"></div>
+            {col.charge}
+          </div>
         {#else if col.charge > 0}
         <div class="col cell blasted" _="on load blast(me, '{col.type}', {col.charge}/1000)"><div class="quark-icon"></div></div>
         {#else}

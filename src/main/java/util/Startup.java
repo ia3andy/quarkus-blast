@@ -1,5 +1,6 @@
 package util;
 
+import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.StartupEvent;
 import io.vertx.core.json.JsonArray;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -25,7 +26,7 @@ public class Startup {
      */
     @Transactional
     public void start(@Observes StartupEvent evt) throws IOException {
-        if (config.devUser() && User.findByAuthId("manual", "dev") == null) {
+        if (LaunchMode.current().isDevOrTest() && config.devUser() && User.findByAuthId("manual", "dev") == null) {
             final InputStream boards = Startup.class.getResourceAsStream("/boards.json");
             final String boardsJson = new String(boards.readAllBytes(), StandardCharsets.UTF_8);
             final JsonArray boardsList = new JsonArray(boardsJson);

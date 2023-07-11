@@ -38,10 +38,10 @@
       {#if OIDC_GOOGLE}{#oidcItem name="google" title="Google"/}{/if}
       {#if DEV_USER}
         <li class="nav-item">
-          {#form uri:UserController.loginDev}
+          {#form uri:UserController.loginDev method='GET'}
             <button class="nav-link">
-            <i class="bi bi-person-gear"></i>
-            Dev User
+              <i class="bi bi-person-gear"></i>
+              Dev User
             </button>
           {/form}
         </li>

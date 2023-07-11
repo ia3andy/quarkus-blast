@@ -1,17 +1,10 @@
 .game-grid.locked {
   pointer-events: none;
 
-  &.selecting .cell.selected .quark-icon  {
-    animation: spin 2s infinite ease;
-  }
-
-  &.playing .cell.playing-swappable .quark-icon, &.playing .cell.selected {
+  .cell.selected .quark-icon {
     animation: shake 0.8s infinite linear;
     transform-origin: 50% 100%;
   }
-
-
-
 }
 
 .cell, .quark-type {
