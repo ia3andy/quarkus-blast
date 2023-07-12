@@ -6,7 +6,16 @@
       {#for col in row}
         {#if !col.blasted}
           <div class="col cell {col.type}"
-            _="on click if $from exists add .selected to me then add .locked to .game-grid then send playSwap(from:$from, to:'{col.coords}') then set $from to null else add .selected to me then set $from to '{col.coords}'"
+            _="
+            on click
+            if $from exists add .selected to me
+              then add .locked to .game-grid
+              then send playSwap(from:$from, to:'{col.coords}')
+              then set $from to null
+            else
+              add .selected to me
+              then set $from to '{col.coords}'
+            "
             hx-post="{uri:GameController.play(game.id)}"
             hx-vals='js:\{ from: event.detail.from, to: event.detail.to}' hx-target="#content"
             hx-trigger="playSwap"
