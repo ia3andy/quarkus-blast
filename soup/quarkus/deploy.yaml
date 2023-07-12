@@ -48,7 +48,7 @@ spec:
             timeoutSeconds: 10
           env:
             - name: QUARKUS_PROFILE
-              value: prod,github,acme
+              value: prod,github,google,acme
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:

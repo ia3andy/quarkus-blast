@@ -6,9 +6,11 @@
     <i class="me bi bi-chevron-right"></i>
     {board.name}
     </button>
-    <button class="nav-link" hx-delete="{uri:BoardController.delete(board.id)}" hx-target="#content" hx-confirm="Are you sure?">
-      <i class="bi bi-trash3"></i>
-    </button>
+    {#if inject:user.isAdmin}
+      <button class="nav-link" hx-delete="{uri:BoardController.delete(board.id)}" hx-target="#content" hx-confirm="Are you sure?">
+        <i class="bi bi-trash3"></i>
+      </button>
+    {/if}
   </li>
   {/for}
 </ul>

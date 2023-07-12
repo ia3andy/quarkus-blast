@@ -1,8 +1,9 @@
 :root {
   --blast-selected: #F6E4D1;
+  --me-color: #A7C7E7;
 }
 
-.sidebar .nav {
+.sidebar .nav, .content-page .nav.login {
   --bs-nav-link-color: white;
   --bs-nav-link-hover-color: #FAC898;
 

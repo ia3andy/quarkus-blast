@@ -1,5 +1,4 @@
 .leaderboard {
-
   .score-item {
 
     &:first-child {
@@ -9,6 +8,11 @@
     &:nth-child(2), &:nth-child(3) {
       background-color: #EAA786;
     }
+
+    &.me {
+      background-color: var(--me-color);
+    }
+
     display: flex;
     flex-wrap: nowrap;
     align-items: center;

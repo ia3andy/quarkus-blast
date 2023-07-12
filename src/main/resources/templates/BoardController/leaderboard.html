@@ -1,6 +1,6 @@
 {#include layout/page.html}
 {#fragment id=content}
-  <ul class="nav page-nav nav-pills p-3">
+  <ul class="nav page-nav nav-pills p-3 container">
     <li class="nav-item nav-left"></li>
     <li class="nav-item text-center">
         <h3><i class="bi me-3 bi-trophy"></i>{boardName}</h3>
@@ -13,7 +13,7 @@
     </li>
   </ul>
   <div class="container overflow-auto leaderboard content-page p-3 flex-grow-1">
-    <div class="mt-5 mb-5">
+    <div class="mt-2 mb-5">
       {#if flash:score}
         <div class="alert alert-success d-flex align-items-center mb-4 game-completed" role="alert" _="on load call playSound('blasted', 100)">
             <i class="blast-score bi flex-shrink-0 me-4"></i>

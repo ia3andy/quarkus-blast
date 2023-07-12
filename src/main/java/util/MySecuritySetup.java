@@ -61,7 +61,7 @@ public class MySecuritySetup implements RenardeUserProvider, RenardeOidcHandler 
             user.lastName = oidcSecurity.getOidcLastName();
             user.userName = oidcSecurity.getOidcUserName();
             if(user.userName == null) {
-            	user.userName = new Haikunator().haikunate();
+            	user.userName = user.firstName.substring(0, 1) + user.lastName;
             }
             user.persist();
         } // else regular login

@@ -33,10 +33,7 @@
         </div>
         <div id="content" class="d-flex flex-column flex-grow-1 mt-2 align-items-center">
           {#if !inject:user}
-            <div class="container text-center game-container p-3">
-              <h1>Welcome to Quarkus Blast</h1>
-              Please login (on the left menu) before you can do anything.
-            </div>
+            {#include layout/login.html}{/include}
           {#else}
             {#insert /}
           {/if}

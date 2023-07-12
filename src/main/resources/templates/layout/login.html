@@ -1,0 +1,20 @@
+<div class="container content-page text-center p-3">
+  <h1>Welcome to Quarkus Blast</h1>
+  <div class="mb-2 p-3 mt-4 bg-box text-light rounded-3 login-box">
+    <h3>Login with:</h3>
+    <ul class="nav login nav-pills flex-column mb-auto justify-content-start text-start">
+      {#if OIDC_GITHUB}{#oidcItem name="github" title="GitHub"/}{/if}
+      {#if OIDC_GOOGLE}{#oidcItem name="google" title="Google"/}{/if}
+      {#if DEV_USER}
+        <li class="nav-item">
+          {#form uri:UserController.loginDev method='GET'}
+          <button class="nav-link">
+            <i class="bi bi-person-gear"></i>
+            Dev User
+          </button>
+          {/form}
+        </li>
+      {/if}
+    </ul>
+  </div>
+</div>

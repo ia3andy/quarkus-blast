@@ -25,26 +25,16 @@
         Guide
       </button>
     </li>
+    <li class="nav-item" >
+      <a class="nav-link text-nowrap" href="https://github.com/ia3andy/quarkus-blast"  target="_blank">
+        <i class="me bi bi-github"></i>
+        Sources
+      </a>
+    </li>
   </ul>
   <hr>
   <h3>Games</h3>
   {#include GameController/gamePicker.html /}
   <hr>
   {#user inject:user img=true size=32/}
-{#else}
-  <div class="mb-2">Login with:</div>
-  <ul class="nav nav-pills flex-column mb-auto">
-      {#if OIDC_GITHUB}{#oidcItem name="github" title="GitHub"/}{/if}
-      {#if OIDC_GOOGLE}{#oidcItem name="google" title="Google"/}{/if}
-      {#if DEV_USER}
-        <li class="nav-item">
-          {#form uri:UserController.loginDev method='GET'}
-            <button class="nav-link">
-              <i class="bi bi-person-gear"></i>
-              Dev User
-            </button>
-          {/form}
-        </li>
-      {/if}
-  </ul>
 {/if}
