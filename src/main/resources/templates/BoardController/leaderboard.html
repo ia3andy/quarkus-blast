@@ -34,7 +34,7 @@
       {/if}
 
       {#for item in leaderboard}
-        <div class="score-item">
+        <div class="score-item{#if item.isMe} me{/if}">
             <div class="rank">
               {item.rank}
             </div>

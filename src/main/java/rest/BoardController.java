@@ -64,7 +64,7 @@ public class BoardController extends HxController {
         final List<ScoreData> scoreData = new ArrayList<>();
         for (int i = 0; i < scores.size(); i++) {
             final ScoreEntity score = scores.get(i);
-            scoreData.add(new ScoreData(i + 1, score.user.userName, score.user.email, score.score));
+            scoreData.add(new ScoreData(i + 1, score.user.userName, score.user.email, security.getUser().equals(score.user), score.score));
         }
         return isHxRequest() ? Templates.leaderboard$content(board.id, board.name, scoreData) :
                 Templates.leaderboard(BoardEntity.listAll(), board.id, board.name, scoreData);
@@ -120,5 +120,5 @@ public class BoardController extends HxController {
     }
 
 
-    public record ScoreData(int rank, String userName, String userEmail, int score) {}
+    public record ScoreData(int rank, String userName, String userEmail, boolean isMe, int score) {}
 }
