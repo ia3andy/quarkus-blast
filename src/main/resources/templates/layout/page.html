@@ -4,8 +4,7 @@
     <title>Quarkus Blast</title>
     <link rel="icon" href="/images/logo.svg" type="image/svg+xml">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {#bundleStyle /}
-    {#bundleScript /}
+    {#bundle /}
     <script>
       window.onload = function() {
           const paramName = "{inject:csrf.parameterName}";

@@ -1,7 +1,12 @@
 {#include layout/page.html}
 {#fragment id=content}
   <ul class="nav page-nav nav-pills p-3 container">
-    <li class="nav-item nav-left"></li>
+    <li class="nav-item nav-left">
+      <button class="nav-link" hx-get="{uri:BoardController.leaderboard(boardId)}" hx-target="#content">
+        <i class="bi bi-arrow-clockwise"></i>
+        <span class="d-none d-lg-block">Refresh</span>
+      </button>
+    </li>
     <li class="nav-item text-center">
         <h3><i class="bi me-3 bi-trophy"></i>{boardName}</h3>
     </li>
@@ -41,7 +46,7 @@
             <div class="text-start avatar">
               {#gravatar item.userEmail size=50 default='mm' class="rounded-circle me-2"/}
             </div>
-            <div class="text-start username flex-grow-1">
+            <div class="text-start username flex-grow-1"{#if inject:user.isAdmin} title="{item.userEmail}"{/if}>
               {item.userName}
             </div>
             <div class="score text-end">
