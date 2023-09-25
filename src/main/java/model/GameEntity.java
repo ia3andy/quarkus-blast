@@ -5,7 +5,7 @@ import game.Game;
 import game.QuarkType;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
@@ -22,6 +22,7 @@ import java.util.Optional;
 public class GameEntity extends PanacheEntity {
 
 	@ManyToOne
+    @JoinColumn(name = "board_id")
 	public BoardEntity board;
 
     public int rows;
@@ -41,6 +42,10 @@ public class GameEntity extends PanacheEntity {
 
     @ManyToOne
 	public User user;
+
+    public static long deleteByBoardId(Long boardId) {
+        return delete("board.id = ?1", boardId);
+    }
 
     public BoardEntity getBoard() {
         return board;

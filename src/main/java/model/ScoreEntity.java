@@ -11,7 +11,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Table( name = "score",
@@ -33,6 +32,10 @@ public class ScoreEntity extends PanacheEntity {
 
     public static List<ScoreEntity> boardScores(BoardEntity board) {
         return find("board = ?1", Sort.by("score").descending(), board).list();
+    }
+
+    public static long deleteByBoardId(Long boardId) {
+        return delete("board.id = ?1", boardId);
     }
 
     public static ScoreEntity findUserScore(User user, BoardEntity board) {

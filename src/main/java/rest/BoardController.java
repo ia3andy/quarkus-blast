@@ -10,7 +10,6 @@ import io.quarkus.qute.TemplateInstance;
 import io.quarkus.runtime.util.StringUtil;
 import io.quarkus.security.Authenticated;
 import io.smallrye.common.annotation.Blocking;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.Positive;
@@ -107,13 +106,12 @@ public class BoardController extends HxController {
         if(!security.getUser().roles().contains("admin")) {
             throw new WebApplicationException(Response.status(Response.Status.UNAUTHORIZED).build());
         }
-        GameEntity.deleteAll();
-        ScoreEntity.deleteAll();
+        GameEntity.deleteByBoardId(boardId);
+        ScoreEntity.deleteByBoardId(boardId);
         BoardEntity.deleteById(boardId);
         hx(HxResponseHeader.LOCATION, Router.getURI(GameController::index).getPath());
         return seeOther(Router.getURI(GameController::index));
     }
-
 
     public record CreateBoardData(String generatedName, int defaultRows,
                                   int defaultColumns, int defaultMinCharge, int defaultMaxCharge) {
