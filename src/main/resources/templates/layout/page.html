@@ -5,20 +5,9 @@
     <link rel="icon" href="/static/images/logo.svg" type="image/svg+xml">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {#bundle /}
-    <script>
-      window.onload = function() {
-          const paramName = "{inject:csrf.parameterName}";
-          const token = "{inject:csrf.token}";
-          document.body.addEventListener('htmx:configRequest', (event) => {
-              if(event.detail.verb !== "get") {
-                  event.detail.parameters[paramName] = token;
-              }
-          });
-      }
-    </script>
   </head>
   <body>
-    <main hx-ext="morph">
+    <main hx-ext="morph" hx-headers='{"{inject:csrf.headerName}":"{inject:csrf.token}"}'>
       <div id="sidebar" class="sidebar offcanvas-lg offcanvas-start navbar-expand-md d-flex flex-column p-3 text-white bg-dark">
         {#include layout/sidebar.html /}
       </div>
