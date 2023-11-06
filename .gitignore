@@ -7,6 +7,7 @@ release.properties
 .flattened-pom.xml
 application-dev.properties
 application-local.properties
+.last-pom-sha512
 
 # Eclipse
 .project
