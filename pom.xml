@@ -192,9 +192,7 @@
     <profile>
       <id>locker</id>
       <activation>
-        <file>
-          <exists>${basedir}/.locker/.last-pom-sha512</exists>
-        </file>
+        <activeByDefault>true</activeByDefault>
       </activation>
       <dependencyManagement>
         <dependencies>
