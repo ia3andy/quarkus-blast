@@ -109,7 +109,7 @@
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>terser</artifactId>
-        <version>5.23.0</version>
+        <version>5.24.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -133,6 +133,6 @@
     <lock-integrity-org.mvnpm--markdown-it-deflist>sha512:rbBde+TwRN2xrswnr6cXTj0wN5IolEy7Hud478lN89vCPtgdX0Vp6yBVVbI/Ur0KGaR5aI4k2aat+EY6zen+AA==</lock-integrity-org.mvnpm--markdown-it-deflist>
     <lock-integrity-org.mvnpm--source-map-support>sha512:Ew20rR0uDBfKq5Luay8BzmxgHweldZhYA8UwZNLTvqvo4llKNfTh515UE/RlPICHlwDHU2VInAnwsZRfMS7FPw==</lock-integrity-org.mvnpm--source-map-support>
     <lock-integrity-org.mvnpm--source-map>sha512:gUlFuBzdDFC66e11cr47JvxpKgvLZCM7AIUKrKwLLZfdpayVPvJtrRUXNPWhClTVuz2AccekVCJSHp2HcRG5FA==</lock-integrity-org.mvnpm--source-map>
-    <lock-integrity-org.mvnpm--terser>sha512:wipdf2qO/Z1LRo+mctcnHBtLOo0DxK8nY63ZgfBmScJGdE62F9IYaQarG2kVgGPu9HPbe76sKLvcyNV4+JV0+g==</lock-integrity-org.mvnpm--terser>
+    <lock-integrity-org.mvnpm--terser>sha512:EMXvn9a331H+1q25gBspW8deNXW519ynMino96Xwv8YScIqscT+IggMesjmIiNWcdyM2DdPYKoS4QhGLcTSWLw==</lock-integrity-org.mvnpm--terser>
   </properties>
 </project>
