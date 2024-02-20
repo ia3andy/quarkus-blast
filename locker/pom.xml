@@ -4,135 +4,135 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>org.acme</groupId>
-  <artifactId>quarkus-blast-locker</artifactId>
   <version>1.0.0-SNAPSHOT</version>
+  <artifactId>quarkus-blast-locker</artifactId>
   <packaging>pom</packaging>
+
+  <!-- Locked dependencies (Update with 'mvn io.mvnpm:locker-maven-plugin:LATEST:lock -Dunlocked') -->
+
   <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.mvnpm.at.jridgewell</groupId>
         <artifactId>gen-mapping</artifactId>
         <version>0.3.3</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm.at.jridgewell</groupId>
         <artifactId>resolve-uri</artifactId>
         <version>3.1.1</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm.at.jridgewell</groupId>
         <artifactId>set-array</artifactId>
         <version>1.1.2</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm.at.jridgewell</groupId>
         <artifactId>source-map</artifactId>
         <version>0.3.5</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm.at.jridgewell</groupId>
         <artifactId>sourcemap-codec</artifactId>
         <version>1.4.15</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm.at.jridgewell</groupId>
         <artifactId>trace-mapping</artifactId>
-        <version>0.3.20</version>
+        <version>0.3.22</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm.at.popperjs</groupId>
         <artifactId>core</artifactId>
         <version>2.11.8</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>acorn</artifactId>
-        <version>8.11.2</version>
+        <version>8.11.3</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>bootstrap-icons</artifactId>
         <version>1.10.5</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>bootstrap</artifactId>
         <version>5.2.3</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>buffer-from</artifactId>
         <version>1.1.2</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>commander</artifactId>
         <version>2.20.3</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>howler</artifactId>
         <version>2.2.3</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>htmx.org</artifactId>
         <version>1.9.2</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>hyperscript.org</artifactId>
         <version>0.9.8</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>idiomorph</artifactId>
         <version>0.0.8</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>markdown-it-deflist</artifactId>
         <version>2.1.0</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>source-map-support</artifactId>
         <version>0.5.21</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>source-map</artifactId>
         <version>0.6.1</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.mvnpm</groupId>
         <artifactId>terser</artifactId>
-        <version>5.24.0</version>
+        <version>5.27.2</version>
+        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <properties>
-    <lock-integrity-org.mvnpm.at.jridgewell--gen-mapping>sha512:IVgrb2S7ZxhiDH+As5YJ+YTfDnt2MWK2krup8iN5PCQTAKHJ/zRGosZbf+kzVGuHjI+MrUNZHz8rKyyOhPVa6A==</lock-integrity-org.mvnpm.at.jridgewell--gen-mapping>
-    <lock-integrity-org.mvnpm.at.jridgewell--resolve-uri>sha512:CXqWgWflcuv9Y1qAhz7J8LoCkPZtOBjviVpPS377uYY5MIAgkIjdsO7Ib39hIbPURbwnAz6SxxSgU5lQ77hj8g==</lock-integrity-org.mvnpm.at.jridgewell--resolve-uri>
-    <lock-integrity-org.mvnpm.at.jridgewell--set-array>sha512:yhwyMj9XKdeLpi7bMF4mepx0eZOCwnVg2oIIvnA3q89ta207Sj03MQRWUfW7il+DD3Dyby4N4PQayXd+yCzaFg==</lock-integrity-org.mvnpm.at.jridgewell--set-array>
-    <lock-integrity-org.mvnpm.at.jridgewell--source-map>sha512:sVipPE2jyEjmqwq+Im0nFIdux3pJjC+sSr/yVdh02YQbacHbCwOUVolXHEYkKwQMVQblbQy6k8hWScOES1EjPA==</lock-integrity-org.mvnpm.at.jridgewell--source-map>
-    <lock-integrity-org.mvnpm.at.jridgewell--sourcemap-codec>sha512:+7rdF9GTXEkVcotbukbAtO+rdBJD6LawsJRg7bXFfD4CZj++SOSbpE4LXSaQvxbrbvcnwUjw9Di/OOzaMHNNtw==</lock-integrity-org.mvnpm.at.jridgewell--sourcemap-codec>
-    <lock-integrity-org.mvnpm.at.jridgewell--trace-mapping>sha512:iSpECls7/XpvnSDg18gJ1oj6wHd+Kc3ddY/RcmPEX7JHB52C9PJHHTau9c/kIaYe0U4yaM5rUXCfHbATtr+KqA==</lock-integrity-org.mvnpm.at.jridgewell--trace-mapping>
-    <lock-integrity-org.mvnpm.at.popperjs--core>sha512:rFiv+Od7w2vTc35ym/2AcD8m1wkS2hU2U5JNECYcVR4oARsye2+yNqnAgHcvWNg9cSMTcJvcCavjn2YOHwJmJA==</lock-integrity-org.mvnpm.at.popperjs--core>
-    <lock-integrity-org.mvnpm--acorn>sha512:bYu42uizH6/w5jHVJll0bgS2XiuiLri1W8TFQkhfqa+5f/yFoilNcx9bE+Zust3N8KswSQzE0nEJYAZ/Fbhyzw==</lock-integrity-org.mvnpm--acorn>
-    <lock-integrity-org.mvnpm--bootstrap-icons>sha512:ySnnLE9/AqxVZykIVo4XeczaZQ8Rr64+IG2oqeUtTZltVAvEegc38yvavXx1zHuJ/ta1ipC3vpj9umyrvLzynQ==</lock-integrity-org.mvnpm--bootstrap-icons>
-    <lock-integrity-org.mvnpm--bootstrap>sha512:Qqyp/mSeoudkMV0cGOOD2EJGw0amStvbyibY0x7djm/zj8n8vB51XPEUR4+Cj93XHdnmc6uDT3/UG6P/neyreg==</lock-integrity-org.mvnpm--bootstrap>
-    <lock-integrity-org.mvnpm--buffer-from>sha512:nFhCbFXiM39KGJc7tZaj8UyREdWAtEbd2lCirSrhQhN2kUoKMGKJRq24SJB8RkpmL+R8QTv7l3RkEar61n/p9Q==</lock-integrity-org.mvnpm--buffer-from>
-    <lock-integrity-org.mvnpm--commander>sha512:wJu/3D2Zzgx7xxdmX/U76UpqQsSxlPEn5uteH7k63kay9hKYLsldU2461FViUozZ5iUgXy7MK4GrlH0pcxSbLg==</lock-integrity-org.mvnpm--commander>
-    <lock-integrity-org.mvnpm--howler>sha512:cYUCiVfW0gQhMvmq7chDEncJgVQAHQBenSxQOE1+DFUuy0z74qSdR2mjWLGdCW6Wa6sIQkshmrmLjiZBEiO5uw==</lock-integrity-org.mvnpm--howler>
-    <lock-integrity-org.mvnpm--htmx.org>sha512:bRlNnpMug7HC1uWdfaZtGm1Q+G755p5iTmO7mtLYyx4IalrXf8kcISBU1WytudF67UXIuJAQb7r1UVF7OuLWHw==</lock-integrity-org.mvnpm--htmx.org>
-    <lock-integrity-org.mvnpm--hyperscript.org>sha512:5Qfwf+huDun3GdSIcuf2nm6VCGdWEuSbk2wQhK4ehSbHD/nApamFTkoymOmOtAz9CvsoZOq3Eu6pcGU/IKrg2w==</lock-integrity-org.mvnpm--hyperscript.org>
-    <lock-integrity-org.mvnpm--idiomorph>sha512:5k9Xs9UbKHUpxxjJJbXter1tdNSr8TnGVOyx+XJLC2bulW7f3Un9BZlMFLwv6beVL4HpboWmkisYbLP98ogHeA==</lock-integrity-org.mvnpm--idiomorph>
-    <lock-integrity-org.mvnpm--markdown-it-deflist>sha512:rbBde+TwRN2xrswnr6cXTj0wN5IolEy7Hud478lN89vCPtgdX0Vp6yBVVbI/Ur0KGaR5aI4k2aat+EY6zen+AA==</lock-integrity-org.mvnpm--markdown-it-deflist>
-    <lock-integrity-org.mvnpm--source-map-support>sha512:Ew20rR0uDBfKq5Luay8BzmxgHweldZhYA8UwZNLTvqvo4llKNfTh515UE/RlPICHlwDHU2VInAnwsZRfMS7FPw==</lock-integrity-org.mvnpm--source-map-support>
-    <lock-integrity-org.mvnpm--source-map>sha512:gUlFuBzdDFC66e11cr47JvxpKgvLZCM7AIUKrKwLLZfdpayVPvJtrRUXNPWhClTVuz2AccekVCJSHp2HcRG5FA==</lock-integrity-org.mvnpm--source-map>
-    <lock-integrity-org.mvnpm--terser>sha512:EMXvn9a331H+1q25gBspW8deNXW519ynMino96Xwv8YScIqscT+IggMesjmIiNWcdyM2DdPYKoS4QhGLcTSWLw==</lock-integrity-org.mvnpm--terser>
-  </properties>
 </project>

@@ -87,36 +87,43 @@
       <groupId>org.mvnpm</groupId>
       <artifactId>htmx.org</artifactId>
       <version>1.9.2</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mvnpm</groupId>
       <artifactId>idiomorph</artifactId>
       <version>0.0.8</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mvnpm</groupId>
       <artifactId>hyperscript.org</artifactId>
       <version>0.9.8</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mvnpm</groupId>
       <artifactId>bootstrap</artifactId>
       <version>5.2.3</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mvnpm.at.popperjs</groupId>
       <artifactId>core</artifactId>
       <version>2.11.8</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mvnpm</groupId>
       <artifactId>howler</artifactId>
       <version>2.2.3</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mvnpm</groupId>
       <artifactId>bootstrap-icons</artifactId>
       <version>1.10.5</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
@@ -192,7 +199,9 @@
     <profile>
       <id>locker</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>!unlocked</name>
+        </property>
       </activation>
       <dependencyManagement>
         <dependencies>
