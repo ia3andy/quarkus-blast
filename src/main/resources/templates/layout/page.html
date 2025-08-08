@@ -20,6 +20,11 @@
           </div>
         </div>
         <div id="content" class="d-flex flex-column flex-grow-1 mt-2 align-items-center">
+          {#if flash:message}
+          <div class="alert alert-{flash:messageType ?: 'success'}">
+            {flash:message}
+          </div>
+          {/if}
           {#if !inject:user}
             {#include layout/login.html}{/include}
           {#else}
