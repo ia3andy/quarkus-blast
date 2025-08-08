@@ -6,14 +6,14 @@
       {#if OIDC_GITHUB}{#oidcItem name="github" title="GitHub"/}{/if}
       {#if OIDC_GOOGLE}{#oidcItem name="google" title="Google"/}{/if}
       {#if DEV_USER}
-        <li class="nav-item">
-          {#form uri:UserController.loginDev method='GET'}
-          <button class="nav-link">
-            <i class="bi bi-person-gear"></i>
-            Dev User
-          </button>
-          {/form}
-        </li>
+      <li class="nav-item">
+        {#form uri:UserController.loginDev method='GET'}
+        <button class="nav-link">
+          <i class="bi bi-person-gear"></i>
+          Dev User
+        </button>
+        {/form}
+      </li>
       {/if}
     </ul>
   </div>
