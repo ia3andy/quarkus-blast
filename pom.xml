@@ -10,12 +10,12 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
-    <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.12.3</quarkus.platform.version>
-    <quarkus.renarde.version>3.0.18</quarkus.renarde.version>
+    <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+    <quarkus.platform.version>999-SNAPSHOT</quarkus.platform.version>
+    <quarkus.renarde.version>3.1.1</quarkus.renarde.version>
     <skipITs>true</skipITs>
     <surefire-plugin.version>3.0.0</surefire-plugin.version>
-    <quarkus-web-bundler.version>1.7.0</quarkus-web-bundler.version>
+    <quarkus-web-bundler.version>1.9.1</quarkus-web-bundler.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -29,6 +29,16 @@
     </dependencies>
   </dependencyManagement>
   <dependencies>
+      <dependency>
+          <groupId>io.quarkus.qute</groupId>
+          <artifactId>qute-core</artifactId>
+          <version>999-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+          <groupId>io.quarkus.qute</groupId>
+          <artifactId>qute-debug</artifactId>
+          <version>999-SNAPSHOT</version>
+      </dependency>
     <dependency>
       <groupId>io.quarkiverse.renarde</groupId>
       <artifactId>quarkus-renarde</artifactId>
@@ -51,7 +61,7 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-reactive</artifactId>
+      <artifactId>quarkus-rest</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
