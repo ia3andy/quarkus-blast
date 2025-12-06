@@ -1,12 +1,15 @@
+@use "variables";
+@use "sidebar";
+@use "blast";
+@use "leaderboard";
+
+@import "bootstrap/dist/css/bootstrap.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
 @font-face {
   font-family: 'SyneMono';
   src: url("../fonts/SyneMono-Regular.ttf") format("truetype");
 }
-
-@import "bootstrap/dist/css/bootstrap.css";
-@import "bootstrap-icons/font/bootstrap-icons.css";
-@import "variables";
-
 
 html, body {
   font-family: SyneMono, monospace;
@@ -63,6 +66,3 @@ h1 {
   .nav-right { right: 0; }
 }
 
-@import "sidebar";
-@import "blast";
-@import "leaderboard";
